@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\API\{CareCenterController, DepartmentController, HospitalController, Department_HospitalController, CareCenter_DepartmentController};
+use App\Http\Controllers\API\{CareCenterController, DepartmentController, HospitalController, Department_HospitalController, CareCenter_DepartmentController, ChainPharmaciesController, PharmacyController};
 Route::apiResource('Departments', DepartmentController::class);
 Route::apiResource('Hospitals', HospitalController::class); //  Route Hospitals
 Route::apiResource('CareCenters', CareCenterController::class); //  Route CareCenters
@@ -12,3 +12,5 @@ Route::prefix('CareCenter_Department')->controller(CareCenter_DepartmentControll
     Route::post('/', 'store');
     Route::put('/{department_id}/{care_center_id}', 'update');
 });
+Route::apiResource('Chain_Pharmacies', ChainPharmaciesController::class);
+Route::apiResource('Pharmacies', PharmacyController::class);
