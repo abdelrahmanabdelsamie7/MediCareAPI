@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DepartmentRequest;
+use App\Http\Resources\DepartmentResource;
 use App\Models\Department;
 use App\Traits\ResponseJsonTrait;
 class DepartmentController extends Controller
@@ -20,7 +21,7 @@ class DepartmentController extends Controller
     public function show(string $id)
     {
         $department = Department::findOrFail($id);
-        return $this->sendSuccess('Department Retireved Successfully', $department);
+        return $this->sendSuccess('Department Retireved Successfully', new DepartmentResource($department));
     }
     public function update(DepartmentRequest $request, string $id)
     {

@@ -13,5 +13,4 @@ class ChainPharmacies extends Model
     {
         return $this->hasMany(Pharmacy::class, 'chain_pharmacy_id');
     }
-
 }

@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\API;
 use App\Http\Requests\ChainPharmaciesRequest;
+use App\Http\Resources\ChainPharmacyResource;
 use App\Models\ChainPharmacies;
 use App\Traits\ResponseJsonTrait;
 use App\Http\Controllers\Controller;
@@ -20,7 +21,7 @@ class ChainPharmaciesController extends Controller
     public function show(string $id)
     {
         $chain_pharmacy = ChainPharmacies::with('pharmacies')->findOrFail($id);
-        return $this->sendSuccess('Chain Pharmacy Retireved Successfully', $chain_pharmacy);
+        return $this->sendSuccess('Chain Pharmacy Retireved Successfully', new ChainPharmacyResource($chain_pharmacy));
     }
     public function update(ChainPharmaciesRequest $request, string $id)
     {

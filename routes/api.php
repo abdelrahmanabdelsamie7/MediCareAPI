@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\API\{CareCenterController, DepartmentController, HospitalController, Department_HospitalController, CareCenter_DepartmentController, ChainPharmaciesController, PharmacyController};
+use App\Http\Controllers\API\{CareCenterController, DepartmentController, HospitalController, Department_HospitalController, CareCenter_DepartmentController, ChainPharmaciesController, PharmacyController, ChainLaboratoriesController, LaboratoryController};
 Route::apiResource('Departments', DepartmentController::class);
 Route::apiResource('Hospitals', HospitalController::class); //  Route Hospitals
 Route::apiResource('CareCenters', CareCenterController::class); //  Route CareCenters
@@ -14,3 +14,5 @@ Route::prefix('CareCenter_Department')->controller(CareCenter_DepartmentControll
 });
 Route::apiResource('Chain_Pharmacies', ChainPharmaciesController::class);
 Route::apiResource('Pharmacies', PharmacyController::class);
+Route::apiResource('Chain_Laboratories', ChainLaboratoriesController::class);
+Route::apiResource('Laboratories', LaboratoryController::class);
