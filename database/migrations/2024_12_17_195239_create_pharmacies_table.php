@@ -24,7 +24,8 @@ return new class extends Migration {
             $table->timestamp('start_at')->nullable();
             $table->timestamp('end_at')->nullable();
             // $table->decimal('avgRate', 4, 2)->default(0.00);
-            $table->foreignId('chain_pharmacy_id')->constrained('chain_pharmacies')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('chain_pharmacy_id')->nullable()->constrained('chain_pharmacies')->cascadeOnDelete()->cascadeOnUpdate();
+
             $table->timestamps();
         });
     }

@@ -21,7 +21,7 @@ class PharmacyRequest extends FormRequest
             'insurence' => 'required|boolean',
             'start_at' => 'required|date',
             'end_at' => 'required|date|after:start_at',
-            'chain_pharmacy_id' => 'required|exists:chain_pharmacies,id'
+            'chain_pharmacy_id' => 'nullable|exists:chain_pharmacies,id'
         ];
     }
 }

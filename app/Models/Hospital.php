@@ -13,6 +13,6 @@ class Hospital extends Model
     public function departments()
     {
         return $this->belongsToMany(Department::class, 'department_hospital')
-            ->withPivot('start_at', 'end_at', 'app_price');
+            ->withPivot('start_at', 'end_at', 'app_price')->distinct();;
     }
 }

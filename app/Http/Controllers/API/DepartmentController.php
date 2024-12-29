@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DepartmentRequest;
+use App\Http\Requests\DoctorUpdateRequest;
 use App\Http\Resources\DepartmentResource;
 use App\Models\Department;
 use App\Traits\ResponseJsonTrait;
@@ -20,10 +21,13 @@ class DepartmentController extends Controller
     }
     public function show(string $id)
     {
-        $department = Department::findOrFail($id);
-        return $this->sendSuccess('Department Retireved Successfully', new DepartmentResource($department));
+        $department = Department::with('hospitals', 'care_centers')->findOrFail($id);
+        $uniqueHospitals = $department->hospitals->unique('id')->values();
+        $department->setRelation('hospitals', $uniqueHospitals);
+
+        return $this->sendSuccess('Department Retrieved Successfully', $department);
     }
-    public function update(DepartmentRequest $request, string $id)
+    public function update(DoctorUpdateRequest $request, string $id)
     {
         $department = Department::findOrFail($id);
         $department->update($request->validated());

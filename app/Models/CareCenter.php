@@ -11,6 +11,7 @@ class CareCenter extends Model
     public function departments()
     {
         return $this->belongsToMany(Department::class, 'care_center_department')
-            ->withPivot('start_at', 'end_at', 'app_price');
+            ->withPivot('start_at', 'end_at', 'app_price')->distinct();
+        ;
     }
 }

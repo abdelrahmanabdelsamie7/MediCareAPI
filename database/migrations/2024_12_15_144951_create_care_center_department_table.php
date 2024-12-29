@@ -17,6 +17,7 @@ return new class extends Migration {
             $table->timestamp('start_at')->nullable();
             $table->timestamp('end_at')->nullable();
             $table->decimal('app_price', 10, 2)->default(0);
+            $table->unique(['department_id', 'care_center_id']);
             $table->timestamps();
         });
     }

@@ -11,6 +11,7 @@ class DepartmentResource extends JsonResource
             'title' => $this->title,
             'description' => $this->description,
             'icon' => $this->icon,
+
         ];
     }
 }

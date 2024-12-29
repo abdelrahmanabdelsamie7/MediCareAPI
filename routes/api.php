@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\API\{CareCenterController, DepartmentController, HospitalController, Department_HospitalController, CareCenter_DepartmentController, ChainPharmaciesController, PharmacyController, ChainLaboratoriesController, LaboratoryController};
+use App\Http\Controllers\API\{CareCenterController, DepartmentController, HospitalController, Department_HospitalController, CareCenter_DepartmentController, ChainPharmaciesController, PharmacyController, ChainLaboratoriesController, LaboratoryController, DoctorController, SpecializationController, DoctorSpecializationController};
 Route::apiResource('Departments', DepartmentController::class);
 Route::apiResource('Hospitals', HospitalController::class); //  Route Hospitals
 Route::apiResource('CareCenters', CareCenterController::class); //  Route CareCenters
@@ -16,3 +16,6 @@ Route::apiResource('Chain_Pharmacies', ChainPharmaciesController::class);
 Route::apiResource('Pharmacies', PharmacyController::class);
 Route::apiResource('Chain_Laboratories', ChainLaboratoriesController::class);
 Route::apiResource('Laboratories', LaboratoryController::class);
+Route::apiResource('Doctors', DoctorController::class);
+Route::apiResource('Specializations', SpecializationController::class);
+Route::apiResource('Doctor_Specialization', DoctorSpecializationController::class);
