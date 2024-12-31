@@ -1,6 +1,7 @@
 <?php
 
-use App\Http\Controllers\API\{CareCenterController, DepartmentController, HospitalController, Department_HospitalController, CareCenter_DepartmentController, ChainPharmaciesController, PharmacyController, ChainLaboratoriesController, LaboratoryController, DoctorController, SpecializationController, DoctorSpecializationController};
+
+use App\Http\Controllers\API\{CareCenterController, DepartmentController, HospitalController, Department_HospitalController, CareCenter_DepartmentController, ChainPharmaciesController, PharmacyController, ChainLaboratoriesController, LaboratoryController, DoctorController, SpecializationController, DoctorSpecializationController, DoctorOfferController, DoctorOfferImageController};
 Route::apiResource('Departments', DepartmentController::class);
 Route::apiResource('Hospitals', HospitalController::class); //  Route Hospitals
 Route::apiResource('CareCenters', CareCenterController::class); //  Route CareCenters
@@ -19,3 +20,6 @@ Route::apiResource('Laboratories', LaboratoryController::class);
 Route::apiResource('Doctors', DoctorController::class);
 Route::apiResource('Specializations', SpecializationController::class);
 Route::apiResource('Doctor_Specialization', DoctorSpecializationController::class);
+Route::delete('Doctors/{doctorId}/Specializations/{specializationId}', [DoctorSpecializationController::class, 'destroy']);
+Route::apiResource('Doctor_Offers', DoctorOfferController::class);
+Route::apiResource('Doctor_Offer_Images', DoctorOfferImageController::class);
