@@ -1,6 +1,6 @@
 <?php
 
-
+use App\Http\Controllers\{AuthUserController, AuthDoctorController, AuthAdminController};
 use App\Http\Controllers\API\{CareCenterController, DepartmentController, HospitalController, Department_HospitalController, CareCenter_DepartmentController, ChainPharmaciesController, PharmacyController, ChainLaboratoriesController, LaboratoryController, DoctorController, SpecializationController, DoctorSpecializationController, DoctorOfferController, DoctorOfferImageController};
 Route::apiResource('Departments', DepartmentController::class);
 Route::apiResource('Hospitals', HospitalController::class); //  Route Hospitals
@@ -23,3 +23,31 @@ Route::apiResource('Doctor_Specialization', DoctorSpecializationController::clas
 Route::delete('Doctors/{doctorId}/Specializations/{specializationId}', [DoctorSpecializationController::class, 'destroy']);
 Route::apiResource('Doctor_Offers', DoctorOfferController::class);
 Route::apiResource('Doctor_Offer_Images', DoctorOfferImageController::class);
+
+// Admin Route
+Route::prefix('admin')
+    ->middleware('api')
+    ->group(function () {
+        Route::post('/login', [AuthAdminController::class, 'login'])->name('admin.login');
+        Route::post('/register', [AuthAdminController::class, 'register'])->name('admin.register');
+        Route::post('/logout', [AuthAdminController::class, 'logout'])->name('admin.logout');
+        Route::get('/getaccount', [AuthAdminController::class, 'getAccount'])->name('admin.getAccount');
+    });
+// User Route
+Route::prefix('user')
+    ->middleware('api')
+    ->group(function () {
+        Route::post('/login', [AuthUserController::class, 'login'])->name('user.login');
+        Route::post('/logout', [AuthUserController::class, 'logout'])->name('user.logout');
+        Route::post('/register', [AuthUserController::class, 'register'])->name('user.register');
+        Route::get('/getaccount', [AuthUserController::class, 'getAccount'])->name('user.getAccount');
+    });
+// Doctor Route
+Route::prefix('doctor')
+    ->middleware('api')
+    ->group(function () {
+        Route::post('/login', [AuthDoctorController::class, 'login'])->name('doctor.login');
+        Route::post('/logout', [AuthDoctorController::class, 'logout'])->name('doctor.logout');
+        Route::get('/getaccount', [AuthDoctorController::class, 'getAccount'])->name('doctor.getAccount');
+    });
+
