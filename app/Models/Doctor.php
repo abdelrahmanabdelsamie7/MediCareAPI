@@ -1,17 +1,14 @@
 <?php
-
 namespace App\Models;
-
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
+use App\Models\{Blog, Department, DoctorOffer, Specialization};
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class Doctor extends Authenticatable implements JWTSubject
 {
     use Notifiable;
-
     protected $table = 'doctors';
-
     protected $fillable = [
         'fName',
         'lName',
@@ -29,7 +26,6 @@ class Doctor extends Authenticatable implements JWTSubject
         'password',
         'department_id'
     ];
-
     protected $hidden = [
         'password',
         'remember_token', // Add this if you're using the "remember me" feature
@@ -44,22 +40,22 @@ class Doctor extends Authenticatable implements JWTSubject
     {
         return $this->belongsTo(Department::class);
     }
-
     public function specializations()
     {
         return $this->belongsToMany(Specialization::class)->distinct();
     }
-
     public function doctor_offers()
     {
         return $this->hasMany(DoctorOffer::class);
     }
-
+    public function blogs()
+    {
+        return $this->hasMany(Blog::class);
+    }
     public function getJWTIdentifier()
     {
         return $this->getKey();
     }
-
     public function getJWTCustomClaims()
     {
         return [];

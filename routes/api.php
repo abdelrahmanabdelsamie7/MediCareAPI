@@ -1,7 +1,6 @@
 <?php
-
 use App\Http\Controllers\{AuthUserController, AuthDoctorController, AuthAdminController};
-use App\Http\Controllers\API\{CareCenterController, DepartmentController, HospitalController, Department_HospitalController, CareCenter_DepartmentController, ChainPharmaciesController, PharmacyController, ChainLaboratoriesController, LaboratoryController, DoctorController, SpecializationController, DoctorSpecializationController, DoctorOfferController, DoctorOfferImageController};
+use App\Http\Controllers\API\{CareCenterController, DepartmentController, HospitalController, Department_HospitalController, CareCenter_DepartmentController, ChainPharmaciesController, PharmacyController, ChainLaboratoriesController, LaboratoryController, DoctorController, SpecializationController, DoctorSpecializationController, DoctorOfferController, DoctorOfferImageController, BlogController};
 Route::apiResource('Departments', DepartmentController::class);
 Route::apiResource('Hospitals', HospitalController::class); //  Route Hospitals
 Route::apiResource('CareCenters', CareCenterController::class); //  Route CareCenters
@@ -23,6 +22,8 @@ Route::apiResource('Doctor_Specialization', DoctorSpecializationController::clas
 Route::delete('Doctors/{doctorId}/Specializations/{specializationId}', [DoctorSpecializationController::class, 'destroy']);
 Route::apiResource('Doctor_Offers', DoctorOfferController::class);
 Route::apiResource('Doctor_Offer_Images', DoctorOfferImageController::class);
+Route::apiResource('Blogs', BlogController::class);
+
 
 // Admin Route
 Route::prefix('admin')

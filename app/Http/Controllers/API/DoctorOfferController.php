@@ -5,7 +5,6 @@ use App\Traits\ResponseJsonTrait;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\OfferResource;
 use App\Http\Requests\DoctorOfferRequest;
-
 class DoctorOfferController extends Controller
 {
     use ResponseJsonTrait;
@@ -15,7 +14,7 @@ class DoctorOfferController extends Controller
     }
     public function index()
     {
-        $doctor_offers = DoctorOffer::all();
+        $doctor_offers = DoctorOffer::where('doctor_id', auth('doctors')->id())->get();
         return $this->sendSuccess('Doctor Offers Retrieved Successfully', $doctor_offers);
     }
     public function store(DoctorOfferRequest $request)
