@@ -8,6 +8,10 @@ use App\Http\Resources\LaboratoryResource;
 class LaboratoryController extends Controller
 {
     use ResponseJsonTrait;
+    public function __construct()
+    {
+        $this->middleware('auth:admins')->only(['store', 'update', 'destroy']);
+    }
     public function index()
     {
         $laboratories = Laboratory::all();

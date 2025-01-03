@@ -10,8 +10,11 @@ use App\Http\Controllers\Controller;
 
 class DoctorSpecializationController extends Controller
 {
-
     use ResponseJsonTrait;
+    public function __construct()
+    {
+        $this->middleware('auth:admins')->only(['store', 'update', 'destroy']);
+    }
     public function store(Request $request)
     {
         $validated = $request->validate([

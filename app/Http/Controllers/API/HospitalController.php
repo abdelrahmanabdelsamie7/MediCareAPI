@@ -8,6 +8,10 @@ use App\Http\Controllers\Controller;
 class HospitalController extends Controller
 {
     use ResponseJsonTrait;
+    public function __construct()
+    {
+        $this->middleware('auth:admins')->only(['store', 'update', 'destroy']);
+    }
     public function index()
     {
         $hospitals = Hospital::all();

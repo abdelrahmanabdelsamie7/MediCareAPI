@@ -8,6 +8,10 @@ use App\Http\Requests\PharmacyRequest;
 class PharmacyController extends Controller
 {
     use ResponseJsonTrait;
+    public function __construct()
+    {
+        $this->middleware('auth:admins')->only(['store', 'update', 'destroy']);
+    }
     public function index()
     {
         $pharmacies = Pharmacy::all();

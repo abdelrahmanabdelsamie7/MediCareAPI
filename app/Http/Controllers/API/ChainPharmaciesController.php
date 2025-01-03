@@ -8,6 +8,10 @@ use App\Http\Controllers\Controller;
 class ChainPharmaciesController extends Controller
 {
     use ResponseJsonTrait;
+    public function __construct()
+    {
+        $this->middleware('auth:admins')->only(['store', 'update', 'destroy']);
+    }
     public function index()
     {
         $chain_pharmacies = ChainPharmacies::all();

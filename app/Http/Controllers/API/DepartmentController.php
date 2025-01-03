@@ -9,6 +9,10 @@ use App\Traits\ResponseJsonTrait;
 class DepartmentController extends Controller
 {
     use ResponseJsonTrait;
+    public function __construct()
+    {
+        $this->middleware('auth:admins')->only(['store', 'update', 'destroy']);
+    }
     public function index()
     {
         $departments = Department::all();
@@ -21,13 +25,13 @@ class DepartmentController extends Controller
     }
     public function show(string $id)
     {
-        $department = Department::with('hospitals', 'care_centers')->findOrFail($id);
+        $department = Department::with('hospitals', 'care_centers', 'doctors')->findOrFail($id);
         $uniqueHospitals = $department->hospitals->unique('id')->values();
         $department->setRelation('hospitals', $uniqueHospitals);
 
         return $this->sendSuccess('Department Retrieved Successfully', $department);
     }
-    public function update(DoctorUpdateRequest $request, string $id)
+    public function update(DepartmentRequest $request, string $id)
     {
         $department = Department::findOrFail($id);
         $department->update($request->validated());
@@ -39,5 +43,4 @@ class DepartmentController extends Controller
         $department->delete();
         return $this->sendSuccess('Department Deleted Successfully');
     }
-
 }

@@ -11,6 +11,10 @@ use App\Http\Controllers\Controller;
 class Department_HospitalController extends Controller
 {
     use ResponseJsonTrait;
+    public function __construct()
+    {
+        $this->middleware('auth:admins')->only(['store', 'update']);
+    }
     public function store(Request $request)
     {
         $validated = $request->validate([

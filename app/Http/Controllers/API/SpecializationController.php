@@ -7,6 +7,10 @@ use App\Http\Requests\SpecializationRequest;
 class SpecializationController extends Controller
 {
     use ResponseJsonTrait;
+    public function __construct()
+    {
+        $this->middleware('auth:admins')->only(['store', 'update', 'destroy']);
+    }
     public function index()
     {
         $specializations = Specialization::all();

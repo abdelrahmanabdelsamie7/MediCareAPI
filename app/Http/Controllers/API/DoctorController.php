@@ -7,6 +7,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\DoctorRequest;
 class DoctorController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:admins')->only(['store', 'update', 'destroy']);
+    }
     use ResponseJsonTrait;
     public function index()
     {

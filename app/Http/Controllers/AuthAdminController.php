@@ -7,10 +7,6 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 class AuthAdminController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth:admins', ['except' => ['login', 'register']]);
-    }
     public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [
