@@ -49,7 +49,6 @@ class DoctorOfferImageController extends Controller
         }
         return $this->sendSuccess('Doctor Offer Image Retrieved Successfully', $doctor_offer_image);
     }
-
     public function update(DoctorOfferImageRequest $request, string $id)
     {
         $doctor_offer_image = DoctorOfferImage::where('id', $id)
