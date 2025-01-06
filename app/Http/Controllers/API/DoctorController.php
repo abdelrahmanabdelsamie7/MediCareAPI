@@ -24,7 +24,7 @@ class DoctorController extends Controller
     }
     public function show(string $id)
     {
-        $doctor = Doctor::with('department', 'specializations')->findOrFail($id);
+        $doctor = Doctor::with('department', 'specializations', 'doctor_offers', 'clinics')->findOrFail($id);
         return $this->sendSuccess('Doctor Retrieved Successfully', $doctor);
     }
     public function update(DoctorUpdateRequest $request, string $id)
