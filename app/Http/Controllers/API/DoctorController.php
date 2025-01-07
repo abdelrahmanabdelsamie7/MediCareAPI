@@ -1,17 +1,21 @@
 <?php
 namespace App\Http\Controllers\API;
-use App\Http\Requests\DoctorUpdateRequest;
 use App\Models\Doctor;
 use App\Traits\ResponseJsonTrait;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DoctorRequest;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\DoctorUpdateRequest;
+
 class DoctorController extends Controller
 {
+    use ResponseJsonTrait;
+
     public function __construct()
     {
         $this->middleware('auth:admins')->only(['store', 'update', 'destroy']);
+        $this->middleware('auth:doctors')->only(['show', 'update']);
     }
-    use ResponseJsonTrait;
     public function index()
     {
         $doctors = Doctor::all();
@@ -25,11 +29,18 @@ class DoctorController extends Controller
     public function show(string $id)
     {
         $doctor = Doctor::with('department', 'specializations', 'doctor_offers', 'clinics')->findOrFail($id);
+        if (Auth::guard('doctors')->id() != $doctor->id) {
+            return $this->sendError('Unauthorized', [], 403);
+        }
         return $this->sendSuccess('Doctor Retrieved Successfully', $doctor);
     }
     public function update(DoctorUpdateRequest $request, string $id)
     {
         $doctor = Doctor::findOrFail($id);
+        if (Auth::guard('doctors')->id() != $doctor->id) {
+            return $this->sendError('Unauthorized', [], 403);
+        }
+
         $doctor->update($request->validated());
         return $this->sendSuccess('Doctor Updated Successfully', $doctor, 201);
     }
@@ -37,6 +48,6 @@ class DoctorController extends Controller
     {
         $doctor = Doctor::findOrFail($id);
         $doctor->delete();
-        return $this->sendSuccess('Doctor Removed Successfully');
+        return $this->sendSuccess('Doctor Deleted Successfully');
     }
 }

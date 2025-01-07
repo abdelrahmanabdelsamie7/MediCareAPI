@@ -34,7 +34,7 @@ class AppointmentController extends Controller
     {
         $appointment = Appointment::where('id', $id)
             ->where('doctor_id', auth('doctors')->id())
-            ->with(['doctor'])
+            ->with(['clinic'])
             ->firstOrFail();
 
         return $this->sendSuccess('Doctor Appointment Retrieved Successfully', $appointment);

@@ -1,6 +1,7 @@
 <?php
 namespace App\Models;
 use App\Models\Doctor;
+use App\Models\Appointment;
 use App\Models\ClinicImage;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -18,5 +19,8 @@ class Clinic extends Model
     {
         return $this->belongsToMany(Doctor::class);
     }
-
+    public function appointments()
+    {
+        return $this->hasMany(Appointment::class);
+    }
 }

@@ -24,7 +24,7 @@ class ClinicController extends Controller
     }
     public function show(string $id)
     {
-        $clinic = Clinic::with('images')->findOrFail($id);
+        $clinic = Clinic::with('images' , 'appointments')->findOrFail($id);
         return $this->sendSuccess('Clinic Retireved Successfully', $clinic);
     }
     public function update(ClinicRequest $request, string $id)
