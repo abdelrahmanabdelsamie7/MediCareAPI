@@ -1,6 +1,7 @@
 <?php
 use App\Http\Controllers\{AuthUserController, AuthDoctorController, AuthAdminController};
-use App\Http\Controllers\API\{CareCenterController, DepartmentController, HospitalController, Department_HospitalController, CareCenter_DepartmentController, ChainPharmaciesController, PharmacyController, ChainLaboratoriesController, LaboratoryController, DoctorController, SpecializationController, DoctorSpecializationController, DoctorOfferController, DoctorOfferImageController, BlogController, ClinicController, ClinicImageController, ClinicDoctorController};
+use App\Http\Controllers\API\{CareCenterController, DepartmentController, HospitalController, Department_HospitalController, CareCenter_DepartmentController, ChainPharmaciesController, PharmacyController, ChainLaboratoriesController, LaboratoryController, DoctorController, SpecializationController, DoctorSpecializationController, DoctorOfferController, DoctorOfferImageController, BlogController, ClinicController, ClinicImageController, ClinicDoctorController, AppointmentController};
+// Start Admin Authorization الحاجات الادمن بيعملها ..
 Route::apiResource('Departments', DepartmentController::class);
 Route::apiResource('Hospitals', HospitalController::class); //  Route Hospitals
 Route::apiResource('CareCenters', CareCenterController::class); //  Route CareCenters
@@ -20,9 +21,6 @@ Route::apiResource('Doctors', DoctorController::class);
 Route::apiResource('Specializations', SpecializationController::class);
 Route::apiResource('Doctor_Specialization', DoctorSpecializationController::class);
 Route::delete('Doctors/{doctorId}/Specializations/{specializationId}', [DoctorSpecializationController::class, 'destroy']);
-Route::apiResource('Doctor_Offers', DoctorOfferController::class);
-Route::apiResource('Doctor_Offer_Images', DoctorOfferImageController::class);
-Route::apiResource('Blogs', BlogController::class);
 Route::apiResource('Clinics', ClinicController::class);
 Route::apiResource('Clinic_Images', ClinicImageController::class);
 // Clinic To Doctor Route
@@ -30,7 +28,18 @@ Route::middleware('auth:admins')->group(function () {
     Route::post('/doctor/{doctorId}/clinic/{clinicId}', [ClinicDoctorController::class, 'store']);
     Route::delete('/doctor/{doctorId}/clinic/{clinicId}', [ClinicDoctorController::class, 'destroy']);
 });
+// End Admin Authorization الحاجات الادمن بيعملها ..
 
+// Satrt Doctor Authorization
+Route::apiResource('Doctor_Offers', DoctorOfferController::class);
+Route::apiResource('Doctor_Offer_Images', DoctorOfferImageController::class);
+Route::apiResource('Blogs', BlogController::class);
+Route::apiResource('Appointments', AppointmentController::class);
+// End Doctor Authorization
+
+
+
+// Start Authentication For Admin , Doctor , User
 // Admin Route
 Route::prefix('admin')
     ->middleware('api')
@@ -57,4 +66,3 @@ Route::prefix('doctor')
         Route::post('/logout', [AuthDoctorController::class, 'logout'])->name('doctor.logout');
         Route::get('/getaccount', [AuthDoctorController::class, 'getAccount'])->name('doctor.getAccount');
     });
-
