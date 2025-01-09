@@ -14,4 +14,5 @@ class CareCenter extends Model
             ->withPivot('start_at', 'end_at', 'app_price')->distinct();
         ;
     }
+    protected $hidden = ['created_at', 'updated_at'];
 }

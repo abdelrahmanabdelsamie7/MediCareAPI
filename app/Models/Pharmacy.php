@@ -1,7 +1,9 @@
 <?php
 namespace App\Models;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+
 class Pharmacy extends Model
 {
     use HasFactory;
@@ -10,6 +12,12 @@ class Pharmacy extends Model
     public function chainPharmacy()
     {
         return $this->belongsTo(ChainPharmacies::class, 'chain_pharmacy_id');
+    }
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'user_pharmacies')
+            ->withPivot('review', 'rating_value')
+            ->withTimestamps();
     }
 }
 

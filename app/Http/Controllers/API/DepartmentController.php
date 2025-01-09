@@ -28,9 +28,9 @@ class DepartmentController extends Controller
         $department = Department::with('hospitals', 'care_centers', 'doctors')->findOrFail($id);
         $uniqueHospitals = $department->hospitals->unique('id')->values();
         $department->setRelation('hospitals', $uniqueHospitals);
-
-        return $this->sendSuccess('Department Retrieved Successfully', $department);
+        return $this->sendSuccess('Department Retrieved Successfully', new DepartmentResource($department));
     }
+
     public function update(DepartmentRequest $request, string $id)
     {
         $department = Department::findOrFail($id);

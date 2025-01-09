@@ -14,7 +14,7 @@ class DoctorController extends Controller
     public function __construct()
     {
         $this->middleware('auth:admins')->only(['store', 'update', 'destroy']);
-        $this->middleware('auth:doctors')->only(['show', 'update']);
+        // $this->middleware('auth:doctors')->only(['show', 'update']);
     }
     public function index()
     {
@@ -28,10 +28,10 @@ class DoctorController extends Controller
     }
     public function show(string $id)
     {
-        $doctor = Doctor::with('department', 'specializations', 'doctor_offers', 'clinics')->findOrFail($id);
-        if (Auth::guard('doctors')->id() != $doctor->id) {
-            return $this->sendError('Unauthorized', [], 403);
-        }
+        $doctor = Doctor::with('department', 'specializations', 'clinics', 'appiontments')->findOrFail($id);
+        // if (Auth::guard('doctors')->id() != $doctor->id) {
+        //     return $this->sendError('Unauthorized', [], 403);
+        // }
         return $this->sendSuccess('Doctor Retrieved Successfully', $doctor);
     }
     public function update(DoctorUpdateRequest $request, string $id)

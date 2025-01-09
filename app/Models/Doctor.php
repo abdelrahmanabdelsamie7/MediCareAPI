@@ -27,6 +27,7 @@ class Doctor extends Authenticatable implements JWTSubject
         'department_id'
     ];
     protected $hidden = [
+        'updated_at',
         'password',
         'remember_token', // Add this if you're using the "remember me" feature
     ];

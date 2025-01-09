@@ -23,7 +23,7 @@ return new class extends Migration {
             $table->boolean('insurence')->default(0);
             $table->timestamp('start_at')->nullable();
             $table->timestamp('end_at')->nullable();
-            // $table->decimal('avgRate', 4, 2)->default(0.00);
+            $table->decimal('avg_rate', 4, 2)->default(0.00);
             $table->foreignId('chain_pharmacy_id')->nullable()->constrained('chain_pharmacies')->cascadeOnDelete()->cascadeOnUpdate();
 
             $table->timestamps();

@@ -11,7 +11,7 @@ class DoctorResource extends JsonResource
             'lName' => $this->lName,
             'phone' => $this->phone,
             'image' => $this->image,
-
+            'clinics' => ClinicResource::collection($this->whenLoaded('clinics')),
         ];
     }
 }
