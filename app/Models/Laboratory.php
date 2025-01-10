@@ -1,8 +1,9 @@
 <?php
 namespace App\Models;
-use App\Models\ChainLaboratories;
+use App\Models\{ChainLaboratories, User};
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+
 class Laboratory extends Model
 {
     use HasFactory;
@@ -12,5 +13,11 @@ class Laboratory extends Model
     public function chainLaboratory()
     {
         return $this->belongsTo(ChainLaboratories::class, 'chain_laboratory_id');
+    }
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'user_laboratories')
+            ->withPivot('review', 'rating_value')
+            ->withTimestamps();
     }
 }

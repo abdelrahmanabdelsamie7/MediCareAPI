@@ -1,6 +1,6 @@
 <?php
 namespace App\Models;
-use App\Models\Pharmacy;
+use App\Models\{Laboratory, Pharmacy};
 use Laravel\Sanctum\HasApiTokens;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
@@ -32,7 +32,12 @@ class User extends Authenticatable implements JWTSubject
             ->withPivot('review', 'rating_value')
             ->withTimestamps();
     }
-
+    public function laboratories()
+    {
+        return $this->belongsToMany(Laboratory::class, 'user_laboratories')
+            ->withPivot('review', 'rating_value')
+            ->withTimestamps();
+    }
     public function getJWTIdentifier()
     {
         return $this->getKey();

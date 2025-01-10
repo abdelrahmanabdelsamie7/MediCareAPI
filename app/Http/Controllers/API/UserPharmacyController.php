@@ -12,6 +12,7 @@ class UserPharmacyController extends Controller
     use ResponseJsonTrait;
     public function __construct()
     {
+        $this->middleware('auth:admins')->only('destroy');
         $this->middleware('auth:api')->only('store');
     }
     public function index()
@@ -64,10 +65,15 @@ class UserPharmacyController extends Controller
             return response()->json(['message' => 'An error occurred while adding the review. Please try again later.'], 500);
         }
     }
-
     public function show(string $id)
     {
         $userPharmacy = UserPharmacy::findOrFail($id);
         return $this->sendSuccess('User Pharmacy review Retrieved Successfully!', $userPharmacy);
+    }
+    public function destroy(string $id)
+    {
+        $userPharmacy = userPharmacy::findOrFail($id);
+        $userPharmacy->delete();
+        return $this->sendSuccess('user Rating Deleted Successfully');
     }
 }
