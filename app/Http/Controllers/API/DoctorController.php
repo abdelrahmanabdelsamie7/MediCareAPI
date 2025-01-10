@@ -37,9 +37,9 @@ class DoctorController extends Controller
     public function update(DoctorUpdateRequest $request, string $id)
     {
         $doctor = Doctor::findOrFail($id);
-        if (Auth::guard('doctors')->id() != $doctor->id) {
-            return $this->sendError('Unauthorized', [], 403);
-        }
+        // if (Auth::guard('doctors')->id() != $doctor->id) {
+        //     return $this->sendError('Unauthorized', [], 403);
+        // }
 
         $doctor->update($request->validated());
         return $this->sendSuccess('Doctor Updated Successfully', $doctor, 201);

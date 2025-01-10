@@ -1,5 +1,6 @@
 <?php
 namespace App\Http\Controllers\API;
+use App\Http\Resources\BlogResource;
 use App\Models\Blog;
 use App\Traits\ResponseJsonTrait;
 use App\Http\Requests\BlogRequest;
@@ -49,5 +50,12 @@ class BlogController extends Controller
             ->firstOrFail();
         $blog->delete();
         return $this->sendSuccess('Doctor Blog Deleted Successfully');
+    }
+
+
+    public function blogsWeb()
+    {
+        $blogs = Blog::with('doctor')->get();
+        return $this->sendSuccess('Blogs Retrieved Successfully', BlogResource::collection($blogs));
     }
 }

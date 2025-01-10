@@ -34,6 +34,7 @@ Route::middleware('auth:admins')->group(function () {
 Route::apiResource('Doctor_Offers', DoctorOfferController::class);
 Route::apiResource('Doctor_Offer_Images', DoctorOfferImageController::class);
 Route::apiResource('Blogs', BlogController::class);
+Route::get('Blogs_Web', [BlogController::class, 'blogsWeb']);
 Route::apiResource('Appointments', AppointmentController::class);
 // End Doctor Authorization
 

@@ -24,7 +24,8 @@ class PharmacyController extends Controller
     }
     public function show(string $id)
     {
-        $pharmacy = Pharmacy::findOrFail($id);
+        $pharmacy = Pharmacy::with('users')->findOrFail($id);
+
         return $this->sendSuccess('Pharmacy Retireved Successfully', $pharmacy);
     }
     public function update(PharmacyRequest $request, string $id)

@@ -9,7 +9,7 @@ class DoctorResource extends JsonResource
             'id' => $this->id,
             'fName' => $this->fName,
             'lName' => $this->lName,
-            'phone' => $this->phone,
+            'title' => $this->title,
             'image' => $this->image,
             'clinics' => ClinicResource::collection($this->whenLoaded('clinics')),
         ];
