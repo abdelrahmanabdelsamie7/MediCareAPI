@@ -19,7 +19,7 @@ return new class extends Migration {
             $table->text('infoAboutDoctor');
             $table->decimal('app_price', 10, 2)->default(0);
             $table->boolean('homeOption')->default(false);
-            // $table->decimal('avgRate', 4, 2)->default(0.00);
+            $table->decimal('avg_rate', 4, 2)->default(0.00);
             $table->string('email')->unique();
             $table->string('password');
             $table->string('role')->default('doctor');

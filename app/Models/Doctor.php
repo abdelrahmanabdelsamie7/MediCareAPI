@@ -1,6 +1,6 @@
 <?php
 namespace App\Models;
-use App\Models\{Blog, Department, DoctorOffer, Specialization, Clinic, Appointment};
+use App\Models\{Blog, Department, DoctorOffer, Specialization, Clinic, Appointment, User};
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -60,6 +60,12 @@ class Doctor extends Authenticatable implements JWTSubject
     public function blogs()
     {
         return $this->hasMany(Blog::class);
+    }
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'user_doctors')
+            ->withPivot('review', 'rating_value')
+            ->withTimestamps();
     }
     public function getJWTIdentifier()
     {

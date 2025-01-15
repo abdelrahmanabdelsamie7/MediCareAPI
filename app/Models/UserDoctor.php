@@ -1,26 +1,25 @@
 <?php
 namespace App\Models;
-use App\Models\User;
-use App\Models\Laboratory;
+use App\Models\{Doctor,User};
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class UserLaboratory extends Model
+class UserDoctor extends Model
 {
     use HasFactory;
-    protected $table = 'user_laboratories';
+    protected $table = 'user_doctors';
     protected $fillable = [
         'review',
         'rating_value',
         'user_id',
-        'laboratory_id',
+        'doctor_id',
     ];
     public function users()
     {
         return $this->belongsToMany(User::class)->withPivot('review', 'rating_value')->withTimestamps();
     }
-    public function laboratories()
+    public function doctors()
     {
-        return $this->belongsToMany(Laboratory::class)->withPivot('review', 'rating_value')->withTimestamps();
+        return $this->belongsToMany(Doctor::class)->withPivot('review', 'rating_value')->withTimestamps();
     }
 }

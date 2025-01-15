@@ -28,7 +28,7 @@ class DoctorController extends Controller
     }
     public function show(string $id)
     {
-        $doctor = Doctor::with('department', 'specializations', 'clinics', 'appiontments')->findOrFail($id);
+        $doctor = Doctor::with('department', 'specializations', 'clinics', 'appiontments', 'users')->findOrFail($id);
         // if (Auth::guard('doctors')->id() != $doctor->id) {
         //     return $this->sendError('Unauthorized', [], 403);
         // }
