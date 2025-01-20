@@ -6,7 +6,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('laboratories', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('title');
             $table->text('service');
             $table->string('image')->nullable();
@@ -18,7 +18,10 @@ return new class extends Migration {
             $table->timestamp('start_at')->nullable();
             $table->timestamp('end_at')->nullable();
             $table->decimal('avg_rate', 4, 2)->default(0.00);
-            $table->foreignId('chain_laboratory_id')->constrained('chain_laboratories')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignUuid('chain_laboratory_id')
+                ->constrained('chain_laboratories')
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
             $table->timestamps();
         });
     }

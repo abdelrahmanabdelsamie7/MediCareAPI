@@ -6,9 +6,9 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('doctor_offer_images', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->text('image');
-            $table->foreignId('doctor_offer_id')->constrained('doctor_offers')->cascadeOnDelete()->cascadeOnUpdate(); // الربط بالعرض
+            $table->foreignUuid('doctor_offer_id')->constrained('doctor_offers')->cascadeOnDelete()->cascadeOnUpdate(); // الربط بالعرض
             $table->timestamps();
         });
     }

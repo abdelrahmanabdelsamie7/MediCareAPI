@@ -1,7 +1,6 @@
 <?php
 namespace App\Http\Controllers\API;
-use App\Models\Clinic;
-use App\Models\Doctor;
+use App\Models\{Clinic, Doctor};
 use Illuminate\Http\Request;
 use App\Traits\ResponseJsonTrait;
 use App\Http\Controllers\Controller;

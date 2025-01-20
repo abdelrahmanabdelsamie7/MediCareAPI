@@ -6,11 +6,11 @@ use App\Traits\ResponseJsonTrait;
 use App\Http\Controllers\Controller;
 class CareCenterController extends Controller
 {
+    use ResponseJsonTrait;
     public function __construct()
     {
         $this->middleware('auth:admins')->only(['store', 'update', 'destroy']);
     }
-    use ResponseJsonTrait;
     public function index()
     {
         $care_centers = CareCenter::all();

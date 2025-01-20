@@ -16,20 +16,46 @@ class AppointmentController extends Controller
     {
         $appointments = Appointment::where('doctor_id', auth('doctors')->id())->get();
         return $this->sendSuccess(
-            'Doctor appointments Retrieved Successfully',
+            'Doctor Appointments Retrieved Successfully',
             $appointments
         );
     }
     public function store(AppointmentRequest $request)
     {
-        $appointment = Appointment::create(array_merge(
-            $request->validated(),
-            ['doctor_id' => auth('doctors')->id()]
-        ));
+        $data = $request->validated();
+        $data['doctor_id'] = auth('doctors')->id();
+        $startTime = \Carbon\Carbon::parse($data['start_at']);
+        $endTime = \Carbon\Carbon::parse($data['end_at']);
+        $existingAppointment = Appointment::where('doctor_id', $data['doctor_id'])
+            ->where('clinic_id', $data['clinic_id'])
+            ->where('day', $data['day'])
+            ->where(function ($query) use ($startTime, $endTime) {
+                $query->whereBetween('start_at', [$startTime->format('H:i'), $endTime->format('H:i')])
+                    ->orWhereBetween('end_at', [$startTime->format('H:i'), $endTime->format('H:i')])
+                    ->orWhere(function ($query) use ($startTime, $endTime) {
+                        $query->where('start_at', '<=', $startTime->format('H:i'))
+                            ->where('end_at', '>=', $endTime->format('H:i'));
+                    });
+            })->exists();
+        if ($existingAppointment) {
+            return $this->sendError('This appointment overlaps with an existing appointment.', 400);
+        }
+        $duration = $data['duration'];
+        $appointments = [];
+        while ($startTime < $endTime) {
+            $appointments[] = [
+                'day' => $data['day'],
+                'start_at' => $startTime->format('H:i'),
+                'end_at' => $startTime->addMinutes($duration)->format('H:i'),
+                'doctor_id' => $data['doctor_id'],
+                'clinic_id' => $data['clinic_id'],
+                'duration' => $duration,
+            ];
+        }
+        Appointment::insert($appointments);
 
-        return $this->sendSuccess('Doctor Appointment Added Successfully', $appointment, 201);
+        return $this->sendSuccess('Doctor appointment Added Successfully', $appointments[0], 201);
     }
-
     public function show(string $id)
     {
         $appointment = Appointment::where('id', $id)

@@ -12,8 +12,8 @@ class UserLaboratoryRequest extends FormRequest
         return [
             'review' => "required|string",
             'rating_value' => 'required|integer|between:1,5',
-            'user_id' => 'required|integer|exists:users,id',
-            'laboratory_id' => 'required|integer|exists:laboratories,id'
+            'user_id' => 'required|string|exists:users,id',
+            'laboratory_id' => 'required|string|exists:laboratories,id'
         ];
     }
 }

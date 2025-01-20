@@ -10,9 +10,10 @@ class AppointmentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'day' => 'required|string|in:Saturday,Sunday,Monday,Tuesday,Wednesday,Thursday,Friday',
+            'day' => 'required|date',
             'start_at' => 'required|date_format:H:i',
             'end_at' => 'required|date_format:H:i|after:start_at',
+            'duration' => 'required|integer|in:10,15,20,30',
             'doctor_id' => 'required|exists:doctors,id',
             'clinic_id' => 'required|exists:clinics,id',
         ];

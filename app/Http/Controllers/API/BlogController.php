@@ -51,8 +51,6 @@ class BlogController extends Controller
         $blog->delete();
         return $this->sendSuccess('Doctor Blog Deleted Successfully');
     }
-
-
     public function blogsWeb()
     {
         $blogs = Blog::with('doctor')->get();

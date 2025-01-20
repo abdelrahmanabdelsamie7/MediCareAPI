@@ -50,4 +50,25 @@ class DoctorController extends Controller
         $doctor->delete();
         return $this->sendSuccess('Doctor Deleted Successfully');
     }
+
+    public function doctorReservations(string $id)
+    {
+        $doctor = Doctor::findOrFail($id);
+        if (Auth::guard('doctors')->id() != $doctor->id) {
+            return $this->sendError('Unauthorized', [], 403);
+        }
+        $doctorReserveNotifications = $doctor->notifications->map(function ($notification) {
+            return [
+                'id' => $notification->id,
+                'type' => $notification->type,
+                'data' => $notification->data,
+                'read_at' => $notification->read_at,
+                'created_at' => $notification->created_at,
+            ];
+        });
+        if ($doctorReserveNotifications->isEmpty()) {
+            return $this->sendSuccess('No Notifications Found', []);
+        }
+        return $this->sendSuccess('Doctor Notifications Retrieved Successfully', $doctorReserveNotifications->toArray());
+    }
 }

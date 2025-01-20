@@ -34,7 +34,6 @@ class DoctorOfferController extends Controller
 
         return $this->sendSuccess('Doctor Offer Retrieved Successfully', new OfferResource($doctor_offer));
     }
-
     public function update(DoctorOfferRequest $request, string $id)
     {
         $doctor_offer = DoctorOffer::where('id', $id)

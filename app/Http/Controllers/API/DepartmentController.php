@@ -30,7 +30,6 @@ class DepartmentController extends Controller
         $department->setRelation('hospitals', $uniqueHospitals);
         return $this->sendSuccess('Department Retrieved Successfully', new DepartmentResource($department));
     }
-
     public function update(DepartmentRequest $request, string $id)
     {
         $department = Department::findOrFail($id);

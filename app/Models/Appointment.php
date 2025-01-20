@@ -1,13 +1,26 @@
 <?php
 namespace App\Models;
+use Illuminate\Support\Str;
 use App\Models\{Clinic, Doctor};
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+
 class Appointment extends Model
 {
     use HasFactory;
-    protected $table = 'appointments';   // Name Of Table
-    protected $fillable = ['day', 'start_at', 'end_at', 'doctor_id', 'clinic_id']; // Columns that will fillable
+    protected $table = 'appointments';
+    protected $fillable = ['day', 'start_at', 'end_at', 'duration', 'doctor_id', 'clinic_id'];
+    protected $keyType = 'string';
+    public $incrementing = false;
+    protected static function boot()
+    {
+        parent::boot();
+        static::creating(function ($model) {
+            if (empty($model->id)) {
+                $model->id = Str::uuid()->toString();
+            }
+        });
+    }
     public function doctors()
     {
         return $this->belongsTo(Doctor::class);

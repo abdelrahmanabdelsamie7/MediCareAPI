@@ -35,5 +35,4 @@ class DoctorSpecializationController extends Controller
         }
         return $this->sendError('Specialization not found for this Doctor', 404);
     }
-
 }

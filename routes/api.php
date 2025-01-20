@@ -1,6 +1,6 @@
 <?php
 use App\Http\Controllers\{AuthUserController, AuthDoctorController, AuthAdminController};
-use App\Http\Controllers\API\{CareCenterController, DepartmentController, HospitalController, Department_HospitalController, CareCenter_DepartmentController, ChainPharmaciesController, PharmacyController, ChainLaboratoriesController, LaboratoryController, DoctorController, SpecializationController, DoctorSpecializationController, DoctorOfferController, DoctorOfferImageController, BlogController, ClinicController, ClinicImageController, ClinicDoctorController, AppointmentController, UserPharmacyController, UserLaboratoryController, UserDoctorController};
+use App\Http\Controllers\API\{CareCenterController, DepartmentController, HospitalController, Department_HospitalController, CareCenter_DepartmentController, ChainPharmaciesController, PharmacyController, ChainLaboratoriesController, LaboratoryController, DoctorController, SpecializationController, DoctorSpecializationController, DoctorOfferController, DoctorOfferImageController, BlogController, ClinicController, ClinicImageController, ClinicDoctorController, AppointmentController, UserPharmacyController, UserLaboratoryController, UserDoctorController, ReservationController, UserNotification};
 // Start Admin Authorization الحاجات الادمن بيعملها ..
 Route::apiResource('Departments', DepartmentController::class);
 Route::apiResource('Hospitals', HospitalController::class); //  Route Hospitals
@@ -31,6 +31,7 @@ Route::middleware('auth:admins')->group(function () {
 // End Admin Authorization الحاجات الادمن بيعملها ..
 
 // Satrt Doctor Authorization
+Route::get('Doctor_Notifications/{doctorId}', [DoctorController::class, 'doctorReservations']);
 Route::apiResource('Doctor_Offers', DoctorOfferController::class);
 Route::apiResource('Doctor_Offer_Images', DoctorOfferImageController::class);
 Route::apiResource('Blogs', BlogController::class);
@@ -43,6 +44,18 @@ Route::apiResource('Appointments', AppointmentController::class);
 Route::apiResource('User_Pharmacy', UserPharmacyController::class);
 Route::apiResource('User_Laboratory', UserLaboratoryController::class);
 Route::apiResource('User_Doctor', UserDoctorController::class);
+Route::prefix('reservations')->group(function () {
+    Route::get('/available/{doctorId}/{day}', [ReservationController::class, 'getAvailableAppointments']);
+    Route::post('/', [ReservationController::class, 'store']);
+    Route::put('/{id}/confirm', [ReservationController::class, 'confirmReservation']);
+    Route::put('/{id}/cancel', [ReservationController::class, 'cancelReservation']);
+
+});
+Route::get('/notifications', function () {
+    $user = auth('api')->user();
+    return response()->json($user->notifications);
+});
+Route::get('User_Notifications/{userId}', [UserNotification::class, 'userReservations']);
 // End User Authorization
 
 

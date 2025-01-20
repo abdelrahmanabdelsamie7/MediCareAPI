@@ -1,14 +1,26 @@
 <?php
 namespace App\Models;
-use App\Models\{Hospital, CareCenter, Doctor};
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\{Hospital, CareCenter, Doctor};
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Department extends Model
 {
     use HasFactory;
-    protected $table = 'departments';   // Name Of Table
-    protected $fillable = ['title', 'description', 'icon']; // Columns that will fillable
+    protected $keyType = 'string';
+    public $incrementing = false;
+    protected static function boot()
+    {
+        parent::boot();
+        static::creating(function ($model) {
+            if (empty($model->id)) {
+                $model->id = Str::uuid()->toString();
+            }
+        });
+    }
+    protected $table = 'departments';
+    protected $fillable = ['title', 'description', 'icon'];
     public function hospitals()
     {
         return $this->belongsToMany(Hospital::class, 'department_hospital')

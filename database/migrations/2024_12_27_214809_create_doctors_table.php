@@ -6,7 +6,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('doctors', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('fName');
             $table->string('lName');
             $table->enum('gender', ['male', 'female']);
@@ -23,7 +23,7 @@ return new class extends Migration {
             $table->string('email')->unique();
             $table->string('password');
             $table->string('role')->default('doctor');
-            $table->foreignId('department_id')->constrained('departments')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignUuid('department_id')->constrained('departments')->cascadeOnDelete()->cascadeOnUpdate();
             $table->boolean('status')->default(true);
             $table->timestamps();
         });

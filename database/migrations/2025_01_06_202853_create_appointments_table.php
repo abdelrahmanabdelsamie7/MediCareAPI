@@ -6,12 +6,14 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('appointments', function (Blueprint $table) {
-            $table->id();
-            $table->string('day');
+            $table->uuid('id')->primary()->default(DB::raw('UUID()'));
+            $table->date('day');
             $table->time('start_at');
             $table->time('end_at');
-            $table->foreignId('doctor_id')->constrained('doctors')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId('clinic_id')->constrained('clinics')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->integer('duration')->default(20);
+            $table->boolean('is_booked')->default(false);
+            $table->foreignUuid('doctor_id')->constrained('doctors')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignUuid('clinic_id')->constrained('clinics')->cascadeOnDelete()->cascadeOnUpdate();
             $table->timestamps();
         });
     }

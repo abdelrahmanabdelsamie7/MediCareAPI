@@ -6,11 +6,11 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('user_pharmacies', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary()->default(DB::raw('UUID()'));
             $table->text('review');
             $table->unsignedTinyInteger('rating_value');
-            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId('pharmacy_id')->constrained('pharmacies')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignUuid('user_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignUuid('pharmacy_id')->constrained('pharmacies')->cascadeOnDelete()->cascadeOnUpdate();
             $table->unique(['user_id', 'pharmacy_id']);
             $table->timestamps();
         });

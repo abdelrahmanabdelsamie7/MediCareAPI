@@ -1,9 +1,10 @@
 <?php
 namespace App\Models;
-use App\Models\{Blog, Department, DoctorOffer, Specialization, Clinic, Appointment, User};
+use Illuminate\Support\Str;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Models\{Blog, Department, DoctorOffer, Specialization, Clinic, Appointment, User};
 
 class Doctor extends Authenticatable implements JWTSubject
 {
@@ -26,6 +27,17 @@ class Doctor extends Authenticatable implements JWTSubject
         'password',
         'department_id'
     ];
+    protected $keyType = 'string';
+    public $incrementing = false;
+    protected static function boot()
+    {
+        parent::boot();
+        static::creating(function ($model) {
+            if (empty($model->id)) {
+                $model->id = Str::uuid()->toString();
+            }
+        });
+    }
     protected $hidden = [
         'updated_at',
         'password',

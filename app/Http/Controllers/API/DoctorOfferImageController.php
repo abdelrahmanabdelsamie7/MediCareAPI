@@ -12,7 +12,6 @@ class DoctorOfferImageController extends Controller
     public function __construct()
     {
         $this->middleware('auth:doctors')->only(['store', 'update', 'destroy']);
-        // $this->middleware('auth:admins')->only(['update', 'destroy']);
     }
     public function index()
     {

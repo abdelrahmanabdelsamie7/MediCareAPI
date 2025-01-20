@@ -1,7 +1,8 @@
 <?php
 namespace App\Models;
-use App\Models\{Laboratory, Pharmacy};
+use Illuminate\Support\Str;
 use Laravel\Sanctum\HasApiTokens;
+use App\Models\{Laboratory, Pharmacy};
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -19,6 +20,17 @@ class User extends Authenticatable implements JWTSubject
         'birth_date',
         'password',
     ];
+    protected $keyType = 'string';
+    public $incrementing = false;
+    protected static function boot()
+    {
+        parent::boot();
+        static::creating(function ($model) {
+            if (empty($model->id)) {
+                $model->id = Str::uuid()->toString();
+            }
+        });
+    }
     protected $hidden = [
         'password',
         'remember_token',

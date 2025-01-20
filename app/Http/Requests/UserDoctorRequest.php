@@ -12,8 +12,8 @@ class UserDoctorRequest extends FormRequest
         return [
             'review' => "required|string",
             'rating_value' => 'required|integer|between:1,5',
-            'user_id' => 'required|integer|exists:users,id',
-            'doctor_id' => 'required|integer|exists:doctors,id'
+            'user_id' => 'required|string|exists:users,id',
+            'doctor_id' => 'required|string|exists:doctors,id'
         ];
     }
 }
