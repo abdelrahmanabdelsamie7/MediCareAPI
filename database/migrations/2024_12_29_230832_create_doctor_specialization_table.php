@@ -6,7 +6,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('doctor_specialization', function (Blueprint $table) {
-            $table->uuid('id')->primary(); 
+            $table->id();
             $table->foreignUuid('doctor_id')->constrained('doctors')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignUuid('specialization_id')->constrained('specializations')->cascadeOnDelete()->cascadeOnUpdate();
             $table->unique(['doctor_id', 'specialization_id']);

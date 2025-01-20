@@ -62,7 +62,7 @@ class UserPharmacyController extends Controller
                 'data' => $userPharmacy
             ], 201);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'An error occurred while adding the review. Please try again later.'], 500);
+            return response()->json(['message' => 'An error occurred while adding the review. Please try again later.' . $e], 500);
         }
     }
     public function show(string $id)

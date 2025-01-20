@@ -8,11 +8,11 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('reservations', function (Blueprint $table) {
-            $table->uuid('id')->primary();
+            $table->id();
             $table->foreignUuid('user_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignUuid('doctor_id')->constrained('doctors')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignUuid('clinic_id')->constrained('clinics')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignUuid('appointment_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('appointment_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->enum('status', ['pending', 'confirmed', 'canceled'])->default('pending');
             $table->timestamps();
         });

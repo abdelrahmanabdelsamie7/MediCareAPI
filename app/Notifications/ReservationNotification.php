@@ -15,6 +15,7 @@ class ReservationNotification extends Notification
         $this->reservationData = $reservationData;
     }
 
+
     public function via($notifiable)
     {
         return ['database'];
@@ -26,10 +27,15 @@ class ReservationNotification extends Notification
             'message' => $this->reservationData['message'],
             'doctor_name' => $this->reservationData['doctor_name'],
             'user_name' => $this->reservationData['user_name'],
-            'appointment_time' => $this->reservationData['appointment_time'],
-            'status' => $this->reservationData['status'],
+            'user_phone' => $this->reservationData['user_phone'],
+            'user_address' => $this->reservationData['user_address'],
+            'start_appointment' => $this->reservationData['start_appointment'],
+            'end_appointment' => $this->reservationData['end_appointment'],
+            'duration_appointment' => $this->reservationData['duration_appointment'],
         ];
     }
+
+
 
     // public function toMail($notifiable)
     // {

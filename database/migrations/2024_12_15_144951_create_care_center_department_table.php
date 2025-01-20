@@ -6,7 +6,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('care_center_department', function (Blueprint $table) {
-            $table->char('id', 36)->primary(); // إزالة default UUID()
+            $table->id();
             $table->char('department_id', 36)->notNullable();
             $table->char('care_center_id', 36)->notNullable();
             $table->timestamp('start_at')->nullable();

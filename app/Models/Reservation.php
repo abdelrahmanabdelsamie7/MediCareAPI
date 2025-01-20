@@ -16,18 +16,10 @@ class Reservation extends Model
         'status',
     ];
     protected $keyType = 'string';
-    public $incrementing = false;
-    protected static function boot()
-    {
-        parent::boot();
-        static::creating(function ($model) {
-            if (empty($model->id)) {
-                $model->id = Str::uuid()->toString();
-            }
-        });
-    }
+    public $incrementing = true;
+
     public function appointment()
     {
-        return $this->belongsTo(Appointment::class, 'appointment_id', 'id');
+        return $this->belongsTo(Appointment::class);
     }
 }

@@ -11,16 +11,8 @@ class Appointment extends Model
     protected $table = 'appointments';
     protected $fillable = ['day', 'start_at', 'end_at', 'duration', 'doctor_id', 'clinic_id'];
     protected $keyType = 'string';
-    public $incrementing = false;
-    protected static function boot()
-    {
-        parent::boot();
-        static::creating(function ($model) {
-            if (empty($model->id)) {
-                $model->id = Str::uuid()->toString();
-            }
-        });
-    }
+    public $incrementing = true;
+
     public function doctors()
     {
         return $this->belongsTo(Doctor::class);

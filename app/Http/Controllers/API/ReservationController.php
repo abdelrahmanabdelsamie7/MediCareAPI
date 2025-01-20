@@ -24,6 +24,9 @@ class ReservationController extends Controller
     public function store(Request $request)
     {
         $user = auth('api')->user();
+        if (!$user) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
         $validated = $request->validate([
             'doctor_id' => 'required|exists:doctors,id',
             'clinic_id' => 'required|exists:clinics,id',
@@ -58,18 +61,19 @@ class ReservationController extends Controller
 
         $reservationData = [
             'message' => 'تم حجز موعد جديد',
-            'doctor_name' => $doctor->fName,
-            'user_name' => $user->name,  // استخدام المستخدم المسترجع
-            'appointment_time' => $appointment->id,
-            'status' => $reservation->status,
+            'doctor_name' => $doctor->fName . ' ' . $doctor->lName,
+            'user_name' => $user->name,
+            'user_phone' => $user->phone,
+            'user_address' => $user->address,
+            'start_appointment' => $appointment->start_at,
+            'end_appointment' => $appointment->end_at,
+            'duration_appointment' => $appointment->duration,
         ];
-        // إرسال الإشعار للطبيب
-        $doctor = Doctor::find($reservation->doctor_id); // الطبيب
+
+
+        $doctor = Doctor::find($reservation->doctor_id);
         $doctor->notify(new ReservationNotification($reservationData));
-
-        // إرسال الإشعار للمستخدم
         $user->notify(new ReservationNotification($reservationData));
-
         return response()->json([
             'message' => 'Reservation Created Successfully',
             'data' => $reservation
