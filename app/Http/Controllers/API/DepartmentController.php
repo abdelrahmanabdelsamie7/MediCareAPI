@@ -25,11 +25,39 @@ class DepartmentController extends Controller
     }
     public function show(string $id)
     {
-        $department = Department::with('hospitals', 'care_centers', 'doctors')->findOrFail($id);
-        $uniqueHospitals = $department->hospitals->unique('id')->values();
-        $department->setRelation('hospitals', $uniqueHospitals);
-        return $this->sendSuccess('Department Retrieved Successfully', new DepartmentResource($department));
+        $department = Department::findOrFail($id);
+        $hospitals = $department->hospitals()->paginate(10);
+        $careCenters = $department->care_centers()->paginate(10);
+        $doctors = $department->doctors()->paginate(10);
+        $tips = $department->tips();
+        $response = [
+            'department' => new DepartmentResource($department),
+            'hospitals' => [
+                'current_page' => $hospitals->currentPage(),
+                'num_of_pages' => $hospitals->lastPage(),
+                'total' => $hospitals->total(),
+                'data' => $hospitals->items(),
+            ],
+            'care_centers' => [
+                'current_page' => $careCenters->currentPage(),
+                'num_of_pages' => $careCenters->lastPage(),
+                'total' => $careCenters->total(),
+                'data' => $careCenters->items(),
+            ],
+            'doctors' => [
+                'current_page' => $doctors->currentPage(),
+                'num_of_pages' => $doctors->lastPage(),
+                'total' => $doctors->total(),
+                'data' => $doctors->items(),
+            ],
+            'tips' => [
+                'data' => $tips->get(),
+            ],
+        ];
+
+        return $this->sendSuccess('Department Retrieved Successfully', $response);
     }
+
     public function update(DepartmentRequest $request, string $id)
     {
         $department = Department::findOrFail($id);

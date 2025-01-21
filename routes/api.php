@@ -1,6 +1,6 @@
 <?php
 use App\Http\Controllers\{AuthUserController, AuthDoctorController, AuthAdminController};
-use App\Http\Controllers\API\{CareCenterController, DepartmentController, HospitalController, Department_HospitalController, CareCenter_DepartmentController, ChainPharmaciesController, PharmacyController, ChainLaboratoriesController, LaboratoryController, DoctorController, SpecializationController, DoctorSpecializationController, DoctorOfferController, DoctorOfferImageController, BlogController, ClinicController, ClinicImageController, ClinicDoctorController, AppointmentController, UserPharmacyController, UserLaboratoryController, UserDoctorController, ReservationController, UserNotification};
+use App\Http\Controllers\API\{CareCenterController, DepartmentController, HospitalController, Department_HospitalController, CareCenter_DepartmentController, ChainPharmaciesController, PharmacyController, ChainLaboratoriesController, LaboratoryController, DoctorController, SpecializationController, DoctorSpecializationController, DoctorOfferController, DoctorOfferImageController, BlogController, ClinicController, ClinicImageController, ClinicDoctorController, AppointmentController, UserPharmacyController, UserLaboratoryController, UserDoctorController, ReservationController, UserNotification, TipController, DeliveryServiceController};
 // Start Admin Authorization الحاجات الادمن بيعملها ..
 Route::apiResource('Departments', DepartmentController::class);
 Route::apiResource('Hospitals', HospitalController::class); //  Route Hospitals
@@ -23,6 +23,8 @@ Route::apiResource('Doctor_Specialization', DoctorSpecializationController::clas
 Route::delete('Doctors/{doctorId}/Specializations/{specializationId}', [DoctorSpecializationController::class, 'destroy']);
 Route::apiResource('Clinics', ClinicController::class);
 Route::apiResource('Clinic_Images', ClinicImageController::class);
+Route::apiResource('Tips', TipController::class);
+Route::apiResource('Delivery_Services', DeliveryServiceController::class);
 // Clinic To Doctor Route
 Route::middleware('auth:admins')->group(function () {
     Route::post('/doctor/{doctorId}/clinic/{clinicId}', [ClinicDoctorController::class, 'store']);

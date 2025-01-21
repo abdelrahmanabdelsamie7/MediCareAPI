@@ -2,7 +2,7 @@
 namespace App\Models;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\{Hospital, CareCenter, Doctor};
+use App\Models\{Hospital, CareCenter, Doctor, Tip};
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Department extends Model
@@ -36,6 +36,10 @@ class Department extends Model
     public function doctors()
     {
         return $this->hasMany(Doctor::class);
+    }
+    public function tips()
+    {
+        return $this->hasMany(Tip::class);
     }
     protected $hidden = ['created_at', 'updated_at'];
 }
