@@ -28,7 +28,7 @@ class DepartmentController extends Controller
         $department = Department::findOrFail($id);
         $hospitals = $department->hospitals()->paginate(10);
         $careCenters = $department->care_centers()->paginate(10);
-        $doctors = $department->doctors()->paginate(10);
+        $doctors = $department->doctors()->paginate(1);
         $tips = $department->tips();
         $response = [
             'department' => new DepartmentResource($department),

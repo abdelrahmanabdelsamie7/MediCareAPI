@@ -24,7 +24,7 @@ class TipController extends Controller
     }
     public function show(string $id)
     {
-        $tip = Tip::findOrFail($id);
+        $tip = Tip::with('department')->findOrFail($id);
         return $this->sendSuccess('Tip Retrieved Successfully', $tip);
     }
     public function update(TipRequest $request, string $id)
