@@ -10,6 +10,7 @@
         "guzzlehttp/guzzle": "^7.2",
         "laravel/framework": "^10.0",
         "laravel/sanctum": "^3.2",
+        "laravel/telescope": "*",
         "laravel/tinker": "^2.8",
         "tymon/jwt-auth": "^2.1"
     },

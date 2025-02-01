@@ -4,7 +4,7 @@ use App\Models\Pharmacy;
 use App\Traits\ResponseJsonTrait;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PharmacyRequest;
-
+use Illuminate\Http\Request;
 class PharmacyController extends Controller
 {
     use ResponseJsonTrait;
@@ -12,9 +12,50 @@ class PharmacyController extends Controller
     {
         $this->middleware('auth:admins')->only(['store', 'update', 'destroy']);
     }
-    public function index()
-    {
-        $pharmacies = Pharmacy::all();
+    public function index(Request $request)
+    {   \Log::info('Request Parameters:', $request->all());
+        $query = Pharmacy::query();
+
+        // 1. Search Implementation
+        if ($request->has('search')) {
+            $searchTerm = $request->search;
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('title', 'like', "%{$searchTerm}%")
+                    ->orWhere('service', 'like', "%{$searchTerm}%")
+                    ->orWhere('address', 'like', "%{$searchTerm}%")
+                     ->orWhere('phone', 'like', "%{$searchTerm}%");
+            });
+        }
+
+        // 2. Filter Implementation
+        if ($request->has('deliveryOption') && $request->deliveryOption != 'all') {
+            $deliveryOption = $request->deliveryOption === '1' ? 1 : 0;
+             $query->where('deliveryOption',  $deliveryOption);
+        }
+
+        if ($request->has('insurence') && $request->insurence != 'all') {
+            $insurence = $request->insurence === '1' ? 1 : 0;
+            $query->where('insurence', $insurence);
+        }
+
+       if ($request->has('min_rate')) {
+            $query->where('avg_rate', '>=', $request->min_rate);
+        }
+
+       if ($request->has('chain_pharmacy_id') && $request->chain_pharmacy_id != 'all') {
+           $query->where('chain_pharmacy_id', $request->chain_pharmacy_id);
+        }
+        if ($request->has('city') && $request->city !== 'all') {
+            $query->where('city', 'like', "%{$request->city}%");
+        }
+         if ($request->has('area') && $request->area !== 'all') {
+            $query->where('area', 'like', "%{$request->area}%");
+        }
+
+
+        // 3. Pagination
+        $pharmacies = $query->paginate(3);
+
         return $this->sendSuccess('Pharmacies Retrieved Successfully', $pharmacies);
     }
     public function store(PharmacyRequest $request)

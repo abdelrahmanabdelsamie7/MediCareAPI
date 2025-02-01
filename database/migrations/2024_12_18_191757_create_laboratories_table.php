@@ -11,7 +11,8 @@ return new class extends Migration {
             $table->text('service');
             $table->string('image')->nullable();
             $table->string('phone', 15);
-            $table->text('address');
+            $table->string('city');
+            $table->string('area');
             $table->string('locationUrl');
             $table->string('whatsappLink');
             $table->boolean('insurence')->default(0);

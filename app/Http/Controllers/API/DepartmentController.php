@@ -4,6 +4,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\DepartmentRequest;
 use App\Http\Requests\DoctorUpdateRequest;
 use App\Http\Resources\DepartmentResource;
+use Illuminate\Http\Request;
 use App\Models\Department;
 use App\Traits\ResponseJsonTrait;
 class DepartmentController extends Controller
@@ -13,11 +14,24 @@ class DepartmentController extends Controller
     {
         $this->middleware('auth:admins')->only(['store', 'update', 'destroy']);
     }
-    public function index()
+    public function index(Request $request)
     {
-        $departments = Department::all();
+        $query = Department::query();
+
+        // 1. Search Implementation
+        if ($request->has('search')) {
+            $searchTerm = $request->search;
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('title', 'like', "%{$searchTerm}%")
+                    ->orWhere('description', 'like', "%{$searchTerm}%");
+            });
+        }
+
+        // 2. Pagination
+        $departments = $query->paginate(10);
+
         return $this->sendSuccess('Departments Retrieved Successfully', $departments);
-    }
+     }
     public function store(DepartmentRequest $request)
     {
         $department = Department::create($request->validated());

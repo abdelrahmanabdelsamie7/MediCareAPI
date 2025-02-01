@@ -5,6 +5,7 @@ use App\Traits\ResponseJsonTrait;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LaboratoryRequest;
 use App\Http\Resources\LaboratoryResource;
+use Illuminate\Http\Request;
 class LaboratoryController extends Controller
 {
     use ResponseJsonTrait;
@@ -12,9 +13,52 @@ class LaboratoryController extends Controller
     {
         $this->middleware('auth:admins')->only(['store', 'update', 'destroy']);
     }
-    public function index()
+    public function index(Request $request)
     {
-        $laboratories = Laboratory::all();
+       \Log::info('Request Parameters:', $request->all());
+
+        $query = Laboratory::query();
+
+        // 1. Search Implementation
+        if ($request->has('search')) {
+            $searchTerm = $request->search;
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('title', 'like', "%{$searchTerm}%")
+                    ->orWhere('service', 'like', "%{$searchTerm}%")
+                    ->orWhere('address', 'like', "%{$searchTerm}%")
+                     ->orWhere('phone', 'like', "%{$searchTerm}%");
+            });
+        }
+
+        // 2. Filter Implementation
+         if ($request->has('insurence') && $request->insurence != 'all') {
+            $insurence = $request->insurence === '1' ? 1 : 0;
+            $query->where('insurence', $insurence);
+        }
+
+       if ($request->has('min_rate')) {
+            $query->where('avg_rate', '>=', $request->min_rate);
+        }
+
+       if ($request->has('chain_laboratory_id') && $request->chain_laboratory_id != 'all') {
+           $query->where('chain_laboratory_id', $request->chain_laboratory_id);
+        }
+        else if($request->has('chain_laboratory_id') && $request->chain_laboratory_id == 'all') {
+            $query->where(function ($q)  {
+                  $q->where('chain_laboratory_id',  null)
+                   ->orWhereNotNull('chain_laboratory_id');
+            });
+          }
+        if ($request->has('city') && $request->city !== 'all') {
+            $query->where('address', 'like', "%{$request->city}%");
+        }
+        if ($request->has('area') && $request->area !== 'all') {
+            $query->where('address', 'like', "%{$request->area}%");
+        }
+
+        // 3. Pagination
+        $laboratories = $query->paginate(3);
+
         return $this->sendSuccess('Laboratories Retrieved Successfully', $laboratories);
     }
     public function store(LaboratoryRequest $request)
