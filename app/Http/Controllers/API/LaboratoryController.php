@@ -14,8 +14,15 @@ class LaboratoryController extends Controller
     }
     public function index()
     {
-        $laboratories = Laboratory::all();
-        return $this->sendSuccess('Laboratories Retrieved Successfully', $laboratories);
+        $laboratories = Laboratory::paginate(10);
+        return $this->sendSuccess('Laboratories Retrieved Successfully', [
+            'laboratories' => LaboratoryResource::collection($laboratories),
+            'pagination' => [
+                'current_page' => $laboratories->currentPage(),
+                'total' => $laboratories->total(),
+                'num_of_pages' => $laboratories->lastPage(),
+            ],
+        ]);
     }
     public function store(LaboratoryRequest $request)
     {

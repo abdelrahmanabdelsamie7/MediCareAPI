@@ -1,11 +1,12 @@
 <?php
 namespace App\Http\Controllers\API;
+use App\Models\Department;
+use Illuminate\Http\Request;
+use App\Traits\ResponseJsonTrait;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DepartmentRequest;
-use App\Http\Requests\DoctorUpdateRequest;
 use App\Http\Resources\DepartmentResource;
-use App\Models\Department;
-use App\Traits\ResponseJsonTrait;
+
 class DepartmentController extends Controller
 {
     use ResponseJsonTrait;
@@ -23,41 +24,45 @@ class DepartmentController extends Controller
         $department = Department::create($request->validated());
         return $this->sendSuccess('Department Added Successfully', $department, 201);
     }
-    public function show(string $id)
+    public function show(Request $request, string $id)
     {
         $department = Department::findOrFail($id);
-        $hospitals = $department->hospitals()->paginate(10);
-        $careCenters = $department->care_centers()->paginate(10);
-        $doctors = $department->doctors()->paginate(1);
-        $tips = $department->tips();
+        $filter = $request->query('filter');
+        $page = $request->query('page', 1);
         $response = [
             'department' => new DepartmentResource($department),
-            'hospitals' => [
+        ];
+        if (!$filter || $filter === 'hospitals') {
+            $hospitals = $department->hospitals()->paginate(5, ['*'], 'hospitals_page', $page);
+            $response['hospitals'] = [
                 'current_page' => $hospitals->currentPage(),
                 'num_of_pages' => $hospitals->lastPage(),
                 'total' => $hospitals->total(),
                 'data' => $hospitals->items(),
-            ],
-            'care_centers' => [
+            ];
+        }
+        if (!$filter || $filter === 'care_centers') {
+            $careCenters = $department->care_centers()->paginate(5, ['*'], 'care_centers_page', $page);
+            $response['care_centers'] = [
                 'current_page' => $careCenters->currentPage(),
                 'num_of_pages' => $careCenters->lastPage(),
                 'total' => $careCenters->total(),
                 'data' => $careCenters->items(),
-            ],
-            'doctors' => [
+            ];
+        }
+        if (!$filter || $filter === 'doctors') {
+            $doctors = $department->doctors()->paginate(5, ['*'], 'doctors_page', $page);
+            $response['doctors'] = [
                 'current_page' => $doctors->currentPage(),
                 'num_of_pages' => $doctors->lastPage(),
                 'total' => $doctors->total(),
                 'data' => $doctors->items(),
-            ],
-            'tips' => [
-                'data' => $tips->get(),
-            ],
-        ];
-
+            ];
+        }
+        $tips = $department->tips()->get();
+        $response['tips'] = $tips;
         return $this->sendSuccess('Department Retrieved Successfully', $response);
     }
-
     public function update(DepartmentRequest $request, string $id)
     {
         $department = Department::findOrFail($id);

@@ -1,5 +1,6 @@
 <?php
 namespace App\Http\Controllers\API;
+use App\Http\Resources\PharmacyResource;
 use App\Models\Pharmacy;
 use App\Traits\ResponseJsonTrait;
 use App\Http\Controllers\Controller;
@@ -14,8 +15,15 @@ class PharmacyController extends Controller
     }
     public function index()
     {
-        $pharmacies = Pharmacy::all();
-        return $this->sendSuccess('Pharmacies Retrieved Successfully', $pharmacies);
+        $pharmacies = Pharmacy::paginate(10);
+        return $this->sendSuccess('Pharmacies Retrieved Successfully', [
+            'pharmacies' => PharmacyResource::collection($pharmacies),
+            'pagination' => [
+                'current_page' => $pharmacies->currentPage(),
+                'total' => $pharmacies->total(),
+                'num_of_pages' => $pharmacies->lastPage(),
+            ],
+        ]);
     }
     public function store(PharmacyRequest $request)
     {

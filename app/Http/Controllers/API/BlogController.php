@@ -53,7 +53,14 @@ class BlogController extends Controller
     }
     public function blogsWeb()
     {
-        $blogs = Blog::with('doctor')->get();
-        return $this->sendSuccess('Blogs Retrieved Successfully', BlogResource::collection($blogs));
+        $blogs = Blog::with('doctor')->paginate(10);
+        return $this->sendSuccess('Blogs Retrieved Successfully', [
+            'blogs' => BlogResource::collection($blogs),
+            'pagination' => [
+                'current_page' => $blogs->currentPage(),
+                'total' => $blogs->total(),
+                'num_of_pages' => $blogs->lastPage(),
+            ],
+        ]);
     }
 }
