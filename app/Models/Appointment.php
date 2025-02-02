@@ -13,11 +13,11 @@ class Appointment extends Model
     protected $keyType = 'string';
     public $incrementing = true;
 
-    public function doctors()
+    public function doctor()
     {
         return $this->belongsTo(Doctor::class);
-
     }
+
     public function clinic()
     {
         return $this->belongsTo(Clinic::class);

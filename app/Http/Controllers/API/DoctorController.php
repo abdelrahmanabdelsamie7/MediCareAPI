@@ -28,12 +28,20 @@ class DoctorController extends Controller
     }
     public function show(string $id)
     {
-        $doctor = Doctor::with('department', 'specializations', 'clinics', 'appiontments', 'users')->findOrFail($id);
-        // if (Auth::guard('doctors')->id() != $doctor->id) {
-        //     return $this->sendError('Unauthorized', [], 403);
-        // }
-        return $this->sendSuccess('Doctor Retrieved Successfully', $doctor);
+        $doctor = Doctor::with('department', 'specializations', 'clinics', 'users')
+            ->findOrFail($id);
+        $appointmentsGroupedByDate = $doctor->appointments->groupBy('day');
+
+        $doctorData = $doctor->toArray();
+        $doctorData['appointmentsGroupedByDate'] = $appointmentsGroupedByDate;
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Doctor Retrieved Successfully',
+            'data' => $doctorData
+        ]);
     }
+
     public function update(DoctorUpdateRequest $request, string $id)
     {
         $doctor = Doctor::findOrFail($id);
