@@ -6,9 +6,7 @@ use App\Traits\ResponseJsonTrait;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DepartmentRequest;
 use App\Http\Resources\DepartmentResource;
-use Illuminate\Http\Request;
-use App\Models\Department;
-use App\Traits\ResponseJsonTrait;
+
 class DepartmentController extends Controller
 {
     use ResponseJsonTrait;
