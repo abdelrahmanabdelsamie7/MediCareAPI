@@ -1,5 +1,6 @@
 <?php
 namespace App\Http\Controllers\API;
+use App\Http\Resources\PharmacyResource;
 use App\Models\Pharmacy;
 use App\Traits\ResponseJsonTrait;
 use App\Http\Controllers\Controller;

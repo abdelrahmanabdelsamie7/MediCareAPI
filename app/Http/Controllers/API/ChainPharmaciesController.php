@@ -24,18 +24,8 @@ class ChainPharmaciesController extends Controller
     }
     public function show(string $id)
     {
-        $chain_pharmacy = ChainPharmacies::findOrFail($id);
-        $pharmacies = $chain_pharmacy->pharmacies()->paginate(10);
-        $response = [
-            'chain_pharmacy' => new ChainPharmacyResource($chain_pharmacy),
-            'pharmacies' => [
-                'current_page' => $pharmacies->currentPage(),
-                'num_of_pages' => $pharmacies->lastPage(),
-                'total' => $pharmacies->total(),
-                'data' => $pharmacies->items(),
-            ],
-        ];
-        return $this->sendSuccess('Chain Pharmacy Retrieved Successfully', $response);
+        $chain_pharmacy = ChainPharmacies::with('pharmacies')->findOrFail($id);
+        return $this->sendSuccess('Chain Pharmacy Retrieved Successfully', $chain_pharmacy);
     }
     public function update(ChainPharmaciesRequest $request, string $id)
     {

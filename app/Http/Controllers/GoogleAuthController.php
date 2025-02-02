@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
+use Google\Client as Google_Client;
 use App\Models\User;
-use Google_Client;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class GoogleAuthController extends Controller
 {
@@ -28,12 +28,12 @@ class GoogleAuthController extends Controller
             [
                 'name' => $payload['name'],
                 'google_id' => $payload['sub'],
-                'avatar' => $payload['picture']??null,
+                'avatar' => $payload['picture'] ?? null,
             ]
         );
 
         // Generate JWT token
-        $token = auth('api')->login($user);
+        $token = auth('api')->attempt(['email' => $user->email, 'password' => '']);
 
         return response()->json([
             'access_token' => $token,

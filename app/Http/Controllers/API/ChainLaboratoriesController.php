@@ -25,20 +25,9 @@ class ChainLaboratoriesController extends Controller
     }
     public function show(string $id)
     {
-        $chain_laboratories = ChainLaboratories::findOrFail($id);
-        $laboratories = $chain_laboratories->laboratories()->paginate(10);
-        $response = [
-            'chain_laboratories' => new ChainLaboratoryResource($chain_laboratories),
-            'laboratories' => [
-                'current_page' => $laboratories->currentPage(),
-                'num_of_pages' => $laboratories->lastPage(),
-                'total' => $laboratories->total(),
-                'data' => $laboratories->items(),
-            ],
-        ];
-        return $this->sendSuccess('Chain Laboratories Retrieved Successfully', $response);
+        $chain_laboratories = ChainLaboratories::with('laboratories')->findOrFail($id);
+        return $this->sendSuccess('Chain Laboratories Retrieved Successfully', $chain_laboratories);
     }
-
     public function update(ChainLaboratoriesRequest $request, string $id)
     {
         $ChainLaboratories = ChainLaboratories::findOrFail($id);
