@@ -33,7 +33,8 @@ class GoogleAuthController extends Controller
         );
 
         // Generate JWT token
-        $token = auth('api')->attempt(['email' => $user->email, 'password' => '']);
+        $token = auth('api')->login($user);
+     //   $token = auth('api')->attempt(['email' => $user->email, 'password' => '']);
 
         return response()->json([
             'access_token' => $token,
