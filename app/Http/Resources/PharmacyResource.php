@@ -12,7 +12,8 @@ class PharmacyResource extends JsonResource
             'service' => $this->service,
             'phone' => $this->phone,
             'image' => $this->image,
-            'address' => $this->address,
+            'city' => $this->city,
+            'area' => $this->area,
             'deliveryOption' => $this->deliveryOption,
             'insurence' => $this->insurence
         ];

@@ -11,7 +11,8 @@ class LaboratoryResource extends JsonResource
             'title' => $this->title,
             'phone' => $this->phone,
             'image' => $this->image,
-            'address' => $this->address,
+            'city' => $this->city,
+            'area' => $this->area,
             'insurence' => $this->insurence
         ];
     }

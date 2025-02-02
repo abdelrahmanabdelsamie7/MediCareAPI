@@ -9,7 +9,7 @@ class Laboratory extends Model
 {
     use HasFactory;
     protected $table = 'laboratories';
-    protected $fillable = ['title', 'service', 'image', 'phone', 'address', 'locationUrl', 'whatsappLink', 'insurence', 'start_at', 'end_at', 'chain_laboratory_id'];
+    protected $fillable = ['title', 'service', 'image', 'phone', 'area', 'city', 'locationUrl', 'whatsappLink', 'insurence', 'start_at', 'end_at', 'chain_laboratory_id'];
     protected $keyType = 'string';
     public $incrementing = false;
     protected static function boot()
