@@ -28,7 +28,7 @@ class DepartmentController extends Controller
         }
 
         // 2. Pagination
-        $departments = $query->paginate(10);
+        $departments = $query->paginate(20);
 
         return $this->sendSuccess('Departments Retrieved Successfully', $departments);
      }

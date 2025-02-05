@@ -14,6 +14,7 @@ class AppointmentController extends Controller
     }
     public function index()
     {
+        Appointment::whereDate('day', '<', now())->delete();
         $appointments = Appointment::where('doctor_id', auth('doctors')->id())->get();
         return $this->sendSuccess(
             'Doctor Appointments Retrieved Successfully',

@@ -1,7 +1,8 @@
 <?php
 namespace App\Http\Controllers\API;
-use App\Models\Doctor;
 use App\Models\User;
+use App\Models\Clinic;
+use App\Models\Doctor;
 use App\Models\Appointment;
 use App\Models\Reservation;
 use Illuminate\Http\Request;
@@ -114,4 +115,21 @@ class ReservationController extends Controller
             'message' => 'Reservation canceled and deleted successfully.',
         ]);
     }
+    public function getUserReservations()
+    {
+        $user = auth('api')->user();
+
+        if (!$user) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
+        $reservations = $user->reservations()->with(['doctor', 'clinic', 'appointment'])->get();
+
+        return response()->json([
+            'message' => 'User Reservations Retrieved Successfully',
+            'data' => $reservations
+        ], 200);
+    }
+
+
 }
