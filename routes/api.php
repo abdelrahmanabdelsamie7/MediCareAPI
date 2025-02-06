@@ -1,5 +1,5 @@
 <?php
-use App\Http\Controllers\{AuthUserController, AuthDoctorController, AuthAdminController, GOogleAuthController};
+use App\Http\Controllers\{AuthUserController, AuthDoctorController, AuthAdminController,GoogleAuthController,PaymentController};
 use App\Http\Controllers\API\{CareCenterController, DepartmentController, HospitalController, Department_HospitalController, CareCenter_DepartmentController, ChainPharmaciesController, PharmacyController, ChainLaboratoriesController, LaboratoryController, DoctorController, SpecializationController, DoctorSpecializationController, DoctorOfferController, DoctorOfferImageController, BlogController, ClinicController, ClinicImageController, ClinicDoctorController, AppointmentController, UserPharmacyController, UserLaboratoryController, UserDoctorController, ReservationController, UserNotification, TipController, DeliveryServiceController};
 // Start Admin Authorization الحاجات الادمن بيعملها ..
 Route::apiResource('Departments', DepartmentController::class);
@@ -62,6 +62,8 @@ Route::get('/notifications', function () {
 Route::get('User_Notifications/{userId}', [UserNotification::class, 'userReservations']);
 // End User Authorization
 
+Route::post('/payment', [PaymentController::class, 'handlePayment']);
+Route::post('/payment/update', [PaymentController::class, 'updatePaymentStatus']);
 
 // Start Authentication For Admin , Doctor , User
 // Admin Route

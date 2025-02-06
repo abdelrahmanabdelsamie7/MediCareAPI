@@ -10,7 +10,7 @@ class DoctorSeeder extends Seeder {
       'fName' => 'Mohamed',
       'lName' => 'Ahmed',
       'email' => 'moalidoc@gmail.com',
-      'password' => bcrypt('a12345678910'),
+      'password' => 'a12345678910',
       'phone' => '01129508321',
       'title' => 'Gastroenterologist',
       'birthDate' => '2003-05-07',

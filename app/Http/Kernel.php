@@ -45,6 +45,11 @@ class Kernel extends HttpKernel
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
              \Illuminate\Http\Middleware\HandleCors::class,
         ],
+        'telescope' => [
+        'web', // Required for Telescope UI
+        'auth:api', // Use API authentication
+        'can:viewTelescope', // Use the Gate
+    ],
     ];
 
     /**

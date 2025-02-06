@@ -12,6 +12,7 @@
         "laravel/sanctum": "^3.2",
         "laravel/telescope": "*",
         "laravel/tinker": "^2.8",
+        "stripe/stripe-php": "16.5",
         "tymon/jwt-auth": "^2.1"
     },
     "require-dev": {
