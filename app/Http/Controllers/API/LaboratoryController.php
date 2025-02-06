@@ -58,7 +58,7 @@ class LaboratoryController extends Controller
         }
 
         // 3. Pagination
-        $laboratories = $query->paginate(3);
+        $laboratories = $query->paginate(5);
 
         return $this->sendSuccess('Laboratories Retrieved Successfully', $laboratories);
     }

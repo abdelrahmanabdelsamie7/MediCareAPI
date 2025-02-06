@@ -18,9 +18,9 @@ class Reservation extends Model
     ];
     protected $keyType = 'string';
     public $incrementing = true;
-    public function users()
+    public function user()
     {
-        return $this->belongsToMany(User::class, 'user_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
     public function doctor()
     {

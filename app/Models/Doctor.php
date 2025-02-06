@@ -4,7 +4,7 @@ use Illuminate\Support\Str;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use App\Models\{Blog, Department, DoctorOffer, Specialization, Clinic, Appointment, User};
+use App\Models\{Blog, Department, DoctorOffer, Specialization, Clinic, Appointment, Reservation};
 
 class Doctor extends Authenticatable implements JWTSubject
 {
@@ -69,17 +69,16 @@ class Doctor extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(Appointment::class);
     }
+    public function reservations()
+    {
+        return $this->hasMany(Reservation::class, 'doctor_id');
+    }
 
     public function blogs()
     {
         return $this->hasMany(Blog::class);
     }
-    public function users()
-    {
-        return $this->belongsToMany(User::class, 'user_doctors')
-            ->withPivot('review', 'rating_value')
-            ->withTimestamps();
-    }
+
     public function getJWTIdentifier()
     {
         return $this->getKey();

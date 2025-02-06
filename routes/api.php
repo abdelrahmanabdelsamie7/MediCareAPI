@@ -39,6 +39,7 @@ Route::apiResource('Doctor_Offer_Images', DoctorOfferImageController::class);
 Route::apiResource('Blogs', BlogController::class);
 Route::get('Blogs_Web', [BlogController::class, 'blogsWeb']);
 Route::apiResource('Appointments', AppointmentController::class);
+Route::middleware('auth:doctors')->get('/doctor/reservations', [ReservationController::class, 'getDoctorReservations']);
 // End Doctor Authorization
 
 

@@ -56,7 +56,7 @@ class PharmacyController extends Controller
 
 
         // 3. Pagination
-        $pharmacies = $query->paginate(3);
+        $pharmacies = $query->paginate(5);
 
         return $this->sendSuccess('Pharmacies Retrieved Successfully', $pharmacies);
     }

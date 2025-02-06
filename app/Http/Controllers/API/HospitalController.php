@@ -24,7 +24,7 @@ class HospitalController extends Controller
     }
     public function show(string $id)
     {
-        $hospital = Hospital::findOrFail($id);
+        $hospital = Hospital::with('departments')->findOrFail($id);
         return $this->sendSuccess('Hospital Retireved Successfully', $hospital);
     }
     public function update(HospitalRequest $request, string $id)

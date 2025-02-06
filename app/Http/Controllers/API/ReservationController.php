@@ -131,5 +131,19 @@ class ReservationController extends Controller
         ], 200);
     }
 
+    public function getDoctorReservations()
+    {
+        $doctor = auth('doctors')->user();
+        if (!$doctor || $doctor->role !== 'doctor') {
+            return response()->json(['message' => 'Unauthorized or Not a Doctor'], 401);
+        }
+        $reservations = Reservation::where('doctor_id', $doctor->id)
+            ->with(['user', 'clinic', 'appointment'])
+            ->get();
+        return response()->json([
+            'message' => 'Doctor Reservations Retrieved Successfully',
+            'data' => $reservations
+        ], 200);
+    }
 
 }
