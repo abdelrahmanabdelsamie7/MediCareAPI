@@ -28,4 +28,8 @@ class UserNotification extends Controller
         }
         return $this->sendSuccess('user Notifications Retrieved Successfully', $userReserveNotifications->toArray());
     }
+    public function markAsRead($notificationId)
+    {
+        return app(ReservationController::class)->markNotificationAsRead($notificationId);
+    }
 }

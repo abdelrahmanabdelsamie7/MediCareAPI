@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Notifications\ReservationNotification;
 
+
 class ReservationController extends Controller
 {
     public function getAvailableAppointments($doctorId, $day)
@@ -59,19 +60,17 @@ class ReservationController extends Controller
         if (!$user) {
             return response()->json(['message' => 'User not found'], 404);
         }
-
         $reservationData = [
             'message' => 'تم حجز موعد جديد',
             'doctor_name' => $doctor->fName . ' ' . $doctor->lName,
             'user_name' => $user->name,
             'user_phone' => $user->phone,
             'user_address' => $user->address,
+            'appointment_day' => $appointment->day,
             'start_appointment' => $appointment->start_at,
             'end_appointment' => $appointment->end_at,
             'duration_appointment' => $appointment->duration,
         ];
-
-
         $doctor = Doctor::find($reservation->doctor_id);
         $doctor->notify(new ReservationNotification($reservationData));
         $user->notify(new ReservationNotification($reservationData));
@@ -80,7 +79,6 @@ class ReservationController extends Controller
             'data' => $reservation
         ], 201);
     }
-
     public function confirmReservation($reservationId)
     {
         $reservation = Reservation::findOrFail($reservationId);
@@ -130,7 +128,6 @@ class ReservationController extends Controller
             'data' => $reservations
         ], 200);
     }
-
     public function getDoctorReservations()
     {
         $doctor = auth('doctors')->user();
@@ -144,6 +141,19 @@ class ReservationController extends Controller
             'message' => 'Doctor Reservations Retrieved Successfully',
             'data' => $reservations
         ], 200);
+    }
+    public function markNotificationAsRead($notificationId)
+    {
+        $user = auth('api')->user() ?? auth('doctors')->user();
+        if (!$user) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+        $notification = $user->notifications()->where('id', $notificationId)->first();
+        if (!$notification) {
+            return response()->json(['message' => 'Notification not found'], 404);
+        }
+        $notification->markAsRead();
+        return response()->json(['message' => 'Notification marked as read']);
     }
 
 }

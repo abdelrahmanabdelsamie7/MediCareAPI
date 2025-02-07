@@ -28,7 +28,7 @@ class DoctorController extends Controller
     }
     public function show(string $id)
     {
-        $doctor = Doctor::with('department', 'specializations', 'clinics', 'users')
+        $doctor = Doctor::with('department', 'specializations', 'clinics')
             ->findOrFail($id);
         $appointmentsGroupedByDate = $doctor->appointments->groupBy('day');
 
@@ -41,7 +41,6 @@ class DoctorController extends Controller
             'data' => $doctorData
         ]);
     }
-
     public function update(DoctorUpdateRequest $request, string $id)
     {
         $doctor = Doctor::findOrFail($id);
@@ -58,7 +57,6 @@ class DoctorController extends Controller
         $doctor->delete();
         return $this->sendSuccess('Doctor Deleted Successfully');
     }
-
     public function doctorReservations(string $id)
     {
         $doctor = Doctor::findOrFail($id);

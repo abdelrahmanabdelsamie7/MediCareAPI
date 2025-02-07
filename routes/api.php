@@ -41,6 +41,9 @@ Route::get('Blogs_Web', [BlogController::class, 'blogsWeb']);
 Route::apiResource('Appointments', AppointmentController::class);
 Route::middleware('auth:doctors')->get('/doctor/reservations', [ReservationController::class, 'getDoctorReservations']);
 // End Doctor Authorization
+Route::middleware(['auth:api,doctors'])->group(function () {
+    Route::patch('notifications/{notificationId}/read', [ReservationController::class, 'markNotificationAsRead']);
+});
 
 
 // Start User Authorization
