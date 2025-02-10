@@ -59,11 +59,11 @@ class AppointmentController extends Controller
     }
     public function show(string $id)
     {
+        Appointment::whereDate('day', '<', now())->delete();
         $appointment = Appointment::where('id', $id)
             ->where('doctor_id', auth('doctors')->id())
             ->with(['clinic'])
             ->firstOrFail();
-
         return $this->sendSuccess('Doctor Appointment Retrieved Successfully', $appointment);
     }
     public function update(AppointmentRequest $request, string $id)

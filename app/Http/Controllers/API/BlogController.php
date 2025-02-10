@@ -60,7 +60,7 @@ class BlogController extends Controller
                 'current_page' => $blogs->currentPage(),
                 'total' => $blogs->total(),
                 'num_of_pages' => $blogs->lastPage(),
-            ],
+            ]
         ]);
     }
 }

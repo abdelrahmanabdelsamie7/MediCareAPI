@@ -17,8 +17,6 @@ class DepartmentController extends Controller
     public function index(Request $request)
     {
         $query = Department::query();
-
-        // 1. Search Implementation
         if ($request->has('search')) {
             $searchTerm = $request->search;
             $query->where(function ($q) use ($searchTerm) {
@@ -26,12 +24,9 @@ class DepartmentController extends Controller
                     ->orWhere('description', 'like', "%{$searchTerm}%");
             });
         }
-
-        // 2. Pagination
         $departments = $query->paginate(20);
-
-        return $this->sendSuccess('Departments Retrieved Successfully', $departments);
-     }
+        return $this->sendSuccess('Departments Retrieved Successfully', $departments, );
+    }
     public function store(DepartmentRequest $request)
     {
         $department = Department::create($request->validated());

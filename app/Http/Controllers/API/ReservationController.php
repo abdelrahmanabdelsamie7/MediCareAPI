@@ -1,15 +1,9 @@
 <?php
 namespace App\Http\Controllers\API;
-use App\Models\User;
-use App\Models\Clinic;
-use App\Models\Doctor;
-use App\Models\Appointment;
-use App\Models\Reservation;
+use App\Models\{User, Doctor, Appointment, Reservation};
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Notifications\ReservationNotification;
-
-
 class ReservationController extends Controller
 {
     public function getAvailableAppointments($doctorId, $day)

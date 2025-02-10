@@ -9,7 +9,7 @@ trait ResponseJsonTrait
         return response()->json([
             'success' => true,
             'message' => $msg,
-            'data' => $data
+            'data' => $data,
         ], $status);
     }
 }
