@@ -1,8 +1,6 @@
 <?php
 namespace App\Notifications;
 use Illuminate\Bus\Queueable;
-use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Messages\DatabaseMessage;
 use Illuminate\Notifications\Notification;
 class ReservationNotification extends Notification
 {
@@ -28,6 +26,7 @@ class ReservationNotification extends Notification
             'start_appointment' => $this->reservationData['start_appointment'],
             'end_appointment' => $this->reservationData['end_appointment'],
             'duration_appointment' => $this->reservationData['duration_appointment'],
+            'reservation_id' => $this->reservationData['reservation_id'],
             'notifiable_id' => $notifiable->id,
             'notifiable_type' => get_class($notifiable),
         ];

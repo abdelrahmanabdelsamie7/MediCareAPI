@@ -4,6 +4,7 @@ use App\Models\{User, Doctor, Appointment, Reservation};
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Notifications\ReservationNotification;
+use Illuminate\Notifications\DatabaseNotification;
 class ReservationController extends Controller
 {
     public function getAvailableAppointments($doctorId, $day)
@@ -64,6 +65,7 @@ class ReservationController extends Controller
             'start_appointment' => $appointment->start_at,
             'end_appointment' => $appointment->end_at,
             'duration_appointment' => $appointment->duration,
+            'reservation_id' => $reservation->id,
         ];
         $doctor = Doctor::find($reservation->doctor_id);
         $doctor->notify(new ReservationNotification($reservationData));
@@ -76,7 +78,8 @@ class ReservationController extends Controller
     public function confirmReservation($reservationId)
     {
         $reservation = Reservation::findOrFail($reservationId);
-        if ($reservation->user_id !== auth('api')->user()->id) {
+        $user = auth('api')->user();
+        if ($reservation->user_id !== $user->id && $reservation->doctor_id !== $user->id) {
             return response()->json(['message' => 'You are not authorized to confirm this reservation.'], 403);
         }
         if ($reservation->status != 'pending') {
@@ -87,6 +90,7 @@ class ReservationController extends Controller
         $appointment = Appointment::findOrFail($reservation->appointment_id);
         $appointment->is_booked = true;
         $appointment->save();
+
         return response()->json([
             'message' => 'Reservation confirmed successfully.',
             'data' => $reservation
@@ -95,16 +99,17 @@ class ReservationController extends Controller
     public function cancelReservation($reservationId)
     {
         $reservation = Reservation::findOrFail($reservationId);
-        if ($reservation->user_id !== auth('api')->user()->id) {
+        $user = auth('api')->user();
+        if ($reservation->user_id !== $user->id && $reservation->doctor_id !== $user->id) {
             return response()->json(['message' => 'You are not authorized to cancel this reservation.'], 403);
         }
-
-        $reservation->delete();
+        DatabaseNotification::where('data->reservation_id', $reservation->id)->delete();
         $appointment = Appointment::findOrFail($reservation->appointment_id);
         $appointment->is_booked = false;
         $appointment->save();
+        $reservation->delete();
         return response()->json([
-            'message' => 'Reservation canceled and deleted successfully.',
+            'message' => 'Reservation canceled, notification deleted, and appointment updated successfully.',
         ]);
     }
     public function getUserReservations()
@@ -134,6 +139,28 @@ class ReservationController extends Controller
         return response()->json([
             'message' => 'Doctor Reservations Retrieved Successfully',
             'data' => $reservations
+        ], 200);
+    }
+    public function getReservationById($id)
+    {
+        $doctor = auth('doctors')->user();
+
+        if (!$doctor || $doctor->role !== 'doctor') {
+            return response()->json(['message' => 'Unauthorized or Not a Doctor'], 401);
+        }
+
+        $reservation = Reservation::where('doctor_id', $doctor->id)
+            ->where('id', $id)
+            ->with(['user', 'clinic', 'appointment'])
+            ->first();
+
+        if (!$reservation) {
+            return response()->json(['message' => 'Reservation Not Found'], 404);
+        }
+
+        return response()->json([
+            'message' => 'Reservation Retrieved Successfully',
+            'data' => $reservation
         ], 200);
     }
     public function markNotificationAsRead($notificationId)
