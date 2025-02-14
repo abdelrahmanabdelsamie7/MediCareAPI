@@ -46,7 +46,7 @@ class PharmacyController extends Controller
         if ($request->has('area') && $request->area !== 'all') {
             $query->where('area', 'like', "%{$request->area}%");
         }
-        $pharmacies = $query->paginate(5);
+        $pharmacies = $query->paginate(6);
         return $this->sendSuccess('Pharmacies Retrieved Successfully', $pharmacies);
     }
     public function store(PharmacyRequest $request)

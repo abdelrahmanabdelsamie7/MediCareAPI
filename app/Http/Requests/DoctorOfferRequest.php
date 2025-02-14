@@ -19,6 +19,7 @@ class DoctorOfferRequest extends FormRequest
             'to_day' => 'required|date|after_or_equal:from_day',
             'is_active' => 'boolean',
             'doctor_id' => 'required|exists:doctors,id',
+            'offer_group_id' => 'required|exists:offer_groups,id',
         ];
     }
 }

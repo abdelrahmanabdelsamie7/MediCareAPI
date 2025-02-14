@@ -48,7 +48,7 @@ class LaboratoryController extends Controller
         if ($request->has('area') && $request->area !== 'all') {
             $query->where('address', 'like', "%{$request->area}%");
         }
-        $laboratories = $query->paginate(5);
+        $laboratories = $query->paginate(6);
         return $this->sendSuccess('Laboratories Retrieved Successfully', $laboratories);
     }
     public function store(LaboratoryRequest $request)

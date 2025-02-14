@@ -34,14 +34,18 @@ class DepartmentController extends Controller
     }
     public function show(Request $request, string $id)
     {
-        $department = Department::findOrFail($id);
+        $department = Department::withCount(['hospitals', 'care_centers', 'doctors'])
+            ->findOrFail($id);
         $filter = $request->query('filter');
         $page = $request->query('page', 1);
         $response = [
             'department' => new DepartmentResource($department),
+            'hospitals_count' => $department->hospitals_count,
+            'care_centers_count' => $department->care_centers_count,
+            'doctors_count' => $department->doctors_count,
         ];
         if (!$filter || $filter === 'hospitals') {
-            $hospitals = $department->hospitals()->paginate(5, ['*'], 'hospitals_page', $page);
+            $hospitals = $department->hospitals()->paginate(6, ['*'], 'hospitals_page', $page);
             $response['hospitals'] = [
                 'current_page' => $hospitals->currentPage(),
                 'num_of_pages' => $hospitals->lastPage(),
@@ -50,7 +54,7 @@ class DepartmentController extends Controller
             ];
         }
         if (!$filter || $filter === 'care_centers') {
-            $careCenters = $department->care_centers()->paginate(5, ['*'], 'care_centers_page', $page);
+            $careCenters = $department->care_centers()->paginate(6, ['*'], 'care_centers_page', $page);
             $response['care_centers'] = [
                 'current_page' => $careCenters->currentPage(),
                 'num_of_pages' => $careCenters->lastPage(),
@@ -58,8 +62,9 @@ class DepartmentController extends Controller
                 'data' => $careCenters->items(),
             ];
         }
+
         if (!$filter || $filter === 'doctors') {
-            $doctors = $department->doctors()->paginate(5, ['*'], 'doctors_page', $page);
+            $doctors = $department->doctors()->paginate(6, ['*'], 'doctors_page', $page);
             $response['doctors'] = [
                 'current_page' => $doctors->currentPage(),
                 'num_of_pages' => $doctors->lastPage(),
@@ -67,8 +72,10 @@ class DepartmentController extends Controller
                 'data' => $doctors->items(),
             ];
         }
+
         $tips = $department->tips()->get();
         $response['tips'] = $tips;
+
         return $this->sendSuccess('Department Retrieved Successfully', $response);
     }
     public function update(DepartmentRequest $request, string $id)

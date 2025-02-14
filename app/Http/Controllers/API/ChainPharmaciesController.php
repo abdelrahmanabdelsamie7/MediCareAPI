@@ -1,7 +1,6 @@
 <?php
 namespace App\Http\Controllers\API;
 use App\Http\Requests\ChainPharmaciesRequest;
-use App\Http\Resources\ChainPharmacyResource;
 use App\Models\ChainPharmacies;
 use App\Traits\ResponseJsonTrait;
 use App\Http\Controllers\Controller;

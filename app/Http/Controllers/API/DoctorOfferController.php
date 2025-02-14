@@ -27,12 +27,8 @@ class DoctorOfferController extends Controller
     }
     public function show(string $id)
     {
-        $doctor_offer = DoctorOffer::where('id', $id)
-            ->where('doctor_id', auth('doctors')->id())
-            ->with(['doctor', 'images'])
-            ->firstOrFail();
-
-        return $this->sendSuccess('Doctor Offer Retrieved Successfully', new OfferResource($doctor_offer));
+        $doctor_offer = DoctorOffer::with(['doctor', 'images', 'offerGroup'])->findOrFail($id);
+        return $this->sendSuccess('Doctor Offer Retrieved Successfully', $doctor_offer);
     }
     public function update(DoctorOfferRequest $request, string $id)
     {
