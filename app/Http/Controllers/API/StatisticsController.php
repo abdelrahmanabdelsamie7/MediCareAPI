@@ -1,7 +1,7 @@
 <?php
 namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
-use App\Models\{Department, Doctor, Blog, Hospital, CareCenter, ChainPharmacies, ChainLaboratories, Laboratory, Pharmacy};
+use App\Models\{Department, Doctor, Blog, Hospital, CareCenter, ChainPharmacies, ChainLaboratories, Laboratory, Pharmacy , User , Clinic , DoctorOffer};
 
 class StatisticsController extends Controller
 {
@@ -16,6 +16,9 @@ class StatisticsController extends Controller
             'data' => [
                 'departmentsCount' => Department::count(),
                 'doctorsCount' => Doctor::count(),
+                'usersCount' => User::count(),
+                'clinicsCount' => Clinic::count(),
+                'offersCount' => DoctorOffer::count(),
                 'doctorBlogsCount' => Blog::count(),
                 'hospitalsCount' => Hospital::count(),
                 'careCentersCount' => CareCenter::count(),

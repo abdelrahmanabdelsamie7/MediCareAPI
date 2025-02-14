@@ -76,4 +76,5 @@ class AuthUserController extends Controller
             'expires_in' => auth('api')->factory()->getTTL() * 120
         ]);
     }
+
 }
