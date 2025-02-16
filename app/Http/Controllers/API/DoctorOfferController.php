@@ -25,11 +25,20 @@ class DoctorOfferController extends Controller
         ));
         return $this->sendSuccess('Doctor Offer Added Successfully', $doctor_offer, 201);
     }
-    public function show(string $id)
-    {
-        $doctor_offer = DoctorOffer::with(['doctor', 'images', 'offerGroup'])->findOrFail($id);
-        return $this->sendSuccess('Doctor Offer Retrieved Successfully', $doctor_offer);
+   public function show(string $id)
+{
+    $doctor_offer = DoctorOffer::with(['doctor', 'doctor.appointments' , 'doctor.clinics', 'images', 'offerGroup'])
+        ->findOrFail($id);
+    if ($doctor_offer->doctor) {
+        $appointmentsGroupedByDate = $doctor_offer->doctor->appointments->groupBy('day');
+        $doctorOfferData = $doctor_offer->toArray();
+        $doctorOfferData['appointmentsGroupedByDate'] = $appointmentsGroupedByDate;
+    } else {
+        $doctorOfferData = $doctor_offer->toArray();
+        $doctorOfferData['appointmentsGroupedByDate'] = [];
     }
+    return $this->sendSuccess('Doctor Offer Retrieved Successfully', $doctorOfferData);
+}
     public function update(DoctorOfferRequest $request, string $id)
     {
         $doctor_offer = DoctorOffer::where('id', $id)
