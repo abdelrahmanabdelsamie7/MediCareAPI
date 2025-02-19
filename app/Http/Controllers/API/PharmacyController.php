@@ -23,6 +23,7 @@ class PharmacyController extends Controller
                     ->orWhere('service', 'like', "%{$searchTerm}%")
                     ->orWhere('city', 'like', "%{$searchTerm}%")
                     ->orWhere('area', 'like', "%{$searchTerm}%")
+                    ->orWhere('insurence', $searchTerm)
                     ->orWhere('phone', 'like', "%{$searchTerm}%");
             });
         }

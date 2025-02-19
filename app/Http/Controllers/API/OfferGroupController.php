@@ -23,7 +23,7 @@ class OfferGroupController extends Controller
     }
     public function show(string $id)
     {
-        $offer_group = OfferGroup::with('doctor_offers')
+        $offer_group = OfferGroup::with(['doctor_offers' , 'doctor_offers.images'])
             ->withCount('doctor_offers')
             ->findOrFail($id);
         return $this->sendSuccess('Group Of Offer Retrieved Successfully', $offer_group);
