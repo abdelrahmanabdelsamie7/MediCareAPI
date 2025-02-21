@@ -15,6 +15,10 @@ class Reservation extends Model
         'clinic_id',
         'appointment_id',
         'status',
+        'payment_intent_id',
+        'currency',
+        'payment_status',
+        'payment_method',
     ];
     protected $keyType = 'string';
     public $incrementing = true;

@@ -14,6 +14,10 @@ return new class extends Migration {
             $table->foreignUuid('clinic_id')->constrained('clinics')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('appointment_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->enum('status', ['pending', 'confirmed', 'canceled'])->default('pending');
+            $table->string('payment_intent_id')->nullable();
+            $table->string('currency', 10)->default('EGP');
+            $table->enum('payment_status', ['pending', 'succeeded', 'failed'])->default('pending');
+            $table->string('payment_method')->nullable(); // Visa, cash, etc.
             $table->timestamps();
         });
     }

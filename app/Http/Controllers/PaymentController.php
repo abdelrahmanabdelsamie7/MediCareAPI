@@ -5,11 +5,12 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Stripe\Stripe;
 use Stripe\PaymentIntent;
-use App\Models\Payment;
+use App\Models\Reservation;
 use Stripe\StripeClient;
 use Exception;
 use Stripe\Exception\ApiErrorException;
 use Illuminate\Support\Facades\Auth;
+
 class PaymentController extends Controller
 {
     protected StripeClient $stripe;
@@ -27,19 +28,22 @@ class PaymentController extends Controller
                 return $this->updatePaymentStatus($request);
             }
 
-            $validated = $request->validate(['amount' => 'required|numeric|min:1']);
-
-            $paymentIntent = $this->stripe->paymentIntents->create([
-                'amount' => $validated['amount'] * 100,
-                'currency' => 'usd',
-                'payment_method_types' => ['card'],
+            $validated = $request->validate([
+                'amount' => 'required|numeric|min:1',
+                'id' => 'required|exists:reservations,id', // Ensure reservation exists
             ]);
 
-            Payment::create([
+            $reservation = Reservation::findOrFail($validated['id']);
+
+            $paymentIntent = $this->stripe->paymentIntents->create([
+                'currency' => 'EGP',
+                'payment_method_types' => ['card'],
+            ]);
+            // Update reservation with payment details
+            $reservation->update([
                 'payment_intent_id' => $paymentIntent->id,
-                'amount' => $validated['amount'],
                 'currency' => 'usd',
-                'status' => 'pending',
+                'payment_status' => 'pending',
             ]);
 
             return response()->json(['clientSecret' => $paymentIntent->client_secret]);
@@ -53,14 +57,18 @@ class PaymentController extends Controller
     public function updatePaymentStatus(Request $request)
     {
         try {
-            $validated = $request->validate(['payment_intent_id' => 'required|string']);
+            $validated = $request->validate([
+                'payment_intent_id' => 'required|string'
+            ]);
 
-            $payment = Payment::where('payment_intent_id', $validated['payment_intent_id'])->firstOrFail();
+            $reservation = Reservation::where('payment_intent_id', $validated['payment_intent_id'])->firstOrFail();
 
             $paymentIntent = $this->stripe->paymentIntents->retrieve($validated['payment_intent_id']);
 
             if ($paymentIntent->status === 'succeeded') {
-                $payment->update(['status' => 'succeeded']);
+                $reservation->update([
+                    'payment_status' => 'succeeded'
+                ]);
                 return response()->json(['message' => 'Payment status updated successfully']);
             }
 
