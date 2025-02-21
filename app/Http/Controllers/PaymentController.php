@@ -35,10 +35,14 @@ class PaymentController extends Controller
 
             $reservation = Reservation::findOrFail($validated['id']);
 
-            $paymentIntent = $this->stripe->paymentIntents->create([
-                'currency' => 'EGP',
+            $amountInCents = (int) ($validated['amount'] * 100); // Convert EGP to cents (piastres)
+
+            $paymentIntent =PaymentIntent::create([
+                'amount' => $amountInCents, // Stripe requires the amount in the smallest currency unit
+                'currency' => 'egp', // Set currency to Egyptian Pounds (EGP)
                 'payment_method_types' => ['card'],
             ]);
+
             // Update reservation with payment details
             $reservation->update([
                 'payment_intent_id' => $paymentIntent->id,
