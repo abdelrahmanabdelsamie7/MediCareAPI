@@ -27,6 +27,7 @@ class ReservationNotification extends Notification
             'end_appointment' => $this->reservationData['end_appointment'],
             'duration_appointment' => $this->reservationData['duration_appointment'],
             'reservation_id' => $this->reservationData['reservation_id'],
+             'final_price' =>$this->reservationData['final_price'],
             'notifiable_id' => $notifiable->id,
             'notifiable_type' => get_class($notifiable),
         ];

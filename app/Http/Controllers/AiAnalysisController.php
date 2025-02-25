@@ -1,7 +1,5 @@
 <?php
-
 namespace App\Http\Controllers;
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -10,7 +8,6 @@ use Illuminate\Support\Str;
 class AiAnalysisController extends Controller
 {
     private string $geminiModel = 'gemini-2.0-flash';
-
     public function analyze(Request $request)
     {
         try {
@@ -27,7 +24,6 @@ class AiAnalysisController extends Controller
             return response()->json(['error' => 'Analysis failed. Please try again later.'], 500);
         }
     }
-
     private function validateRequest(Request $request)
     {
         $request->validate([
@@ -39,7 +35,6 @@ class AiAnalysisController extends Controller
             abort(response()->json(['error' => 'يرجى إدخال الأعراض أو تحميل صورة للتحليل.'], 400));
         }
     }
-
     private function callGeminiApi(string $prompt, ?string $imageData = null)
     {
         $apiKey = env('GEMINI_API_KEY');
@@ -72,7 +67,6 @@ class AiAnalysisController extends Controller
 
         return $response->json();
     }
-
     private function buildPrompt(?string $text, bool $hasImage): string
     {
         $basePrompt = $hasImage
@@ -95,60 +89,51 @@ class AiAnalysisController extends Controller
 
         return $basePrompt;
     }
-
-
     private function processImage($image): string
     {
         return base64_encode(file_get_contents($image->path()));
     }
-
     private function parseGeminiResponse(array $response): array
-{
-    $text = $response['candidates'][0]['content']['parts'][0]['text'] ?? '';
+    {
+        $text = $response['candidates'][0]['content']['parts'][0]['text'] ?? '';
 
-    try {
-        // نحاول تحليل النص كـ JSON مباشرةً
-        $json = json_decode($text, true);
+        try {
+            // نحاول تحليل النص كـ JSON مباشرةً
+            $json = json_decode($text, true);
 
-        // إذا لم يكن JSON صحيحًا، نحاول استخراجه باستخدام تعبير منتظم
-        if (!is_array($json)) {
-            preg_match('/\{.*\}/s', $text, $matches);
-            if (!empty($matches[0])) {
-                $json = json_decode($matches[0], true);
+            // إذا لم يكن JSON صحيحًا، نحاول استخراجه باستخدام تعبير منتظم
+            if (!is_array($json)) {
+                preg_match('/\{.*\}/s', $text, $matches);
+                if (!empty($matches[0])) {
+                    $json = json_decode($matches[0], true);
+                }
             }
-        }
 
-        // إذا كان التنسيق غير صالح حتى الآن، نستخدم تحليل احتياطي
-        if (!is_array($json)) {
+            // إذا كان التنسيق غير صالح حتى الآن، نستخدم تحليل احتياطي
+            if (!is_array($json)) {
+                return $this->fallbackParsing($text);
+            }
+
+            // التأكد من أن نسبة الثقة موجودة وتحويلها إلى نسبة مئوية
+            $confidenceScore = $json['confidence'];
+            $message = $confidenceScore < 50 ? "⚠️ النتيجة غير مؤكدة بنسبة كبيرة، يُفضل مراجعة طبيب مختص." : "✅ الذكاء الاصطناعي واثق من هذا التشخيص.";
+
+            return [
+                'imageAnalysis' => $json['imageAnalysis'] ?? '',
+                'diagnosis' => $json['diagnosis'] ?? 'غير متوفر',
+                'recommendedSpecialization' => $json['recommendedSpecialization'] ?? '',
+                'advice' => $json['advice'] ?? '',
+                'confidence_score' => $confidenceScore,
+                'message' => $message,
+                'suggested_medications' => isset($json['medications']) && is_array($json['medications'])
+                    ? $json['medications']
+                    : [['name' => 'غير متوفر', 'dosage' => '', 'notes' => 'لا يوجد اقتراحات متاحة.']],
+                'medication_warning' => "⚠️ لا تتناول أي دواء دون الرجوع إلى طبيب مختص."
+            ];
+        } catch (\Exception $e) {
             return $this->fallbackParsing($text);
         }
-
-        // التأكد من أن نسبة الثقة موجودة وتحويلها إلى نسبة مئوية
-        $confidenceScore = $json['confidence'] ;
-        $message = $confidenceScore < 50 ? "⚠️ النتيجة غير مؤكدة بنسبة كبيرة، يُفضل مراجعة طبيب مختص." : "✅ الذكاء الاصطناعي واثق من هذا التشخيص.";
-
-        return [
-            'imageAnalysis' => $json['imageAnalysis'] ?? '',
-            'diagnosis' => $json['diagnosis'] ?? 'غير متوفر',
-            'recommendedSpecialization' => $json['recommendedSpecialization'] ?? '',
-            'advice' => $json['advice'] ?? '',
-            'confidence_score' => $confidenceScore,
-            'message' => $message,
-            'suggested_medications' => isset($json['medications']) && is_array($json['medications'])
-                ? $json['medications']
-                : [['name' => 'غير متوفر', 'dosage' => '', 'notes' => 'لا يوجد اقتراحات متاحة.']],
-            'medication_warning' => "⚠️ لا تتناول أي دواء دون الرجوع إلى طبيب مختص."
-        ];
-    } catch (\Exception $e) {
-        return $this->fallbackParsing($text);
     }
-}
-
-
-
-
-
-
     private function fallbackParsing(string $text): array
     {
         return [

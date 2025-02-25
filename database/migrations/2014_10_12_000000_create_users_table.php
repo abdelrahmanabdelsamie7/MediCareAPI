@@ -16,6 +16,8 @@ return new class extends Migration {
             $table->date('birth_date')->nullable();
             $table->string('password')->nullable();
             $table->string('role')->default('user');
+            $table->integer('points')->default(0);
+            $table->timestamp('last_visit')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

@@ -17,6 +17,7 @@ return new class extends Migration {
             $table->string('payment_intent_id')->nullable();
             $table->string('currency', 10)->default('EGP');
             $table->enum('payment_status', ['pending', 'succeeded', 'failed'])->default('pending');
+              $table->decimal('final_price', 8, 2)->default(0);
             $table->string('payment_method')->nullable(); // Visa, cash, etc.
             $table->timestamps();
         });

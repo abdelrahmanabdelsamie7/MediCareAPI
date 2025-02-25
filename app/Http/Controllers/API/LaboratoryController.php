@@ -23,6 +23,7 @@ class LaboratoryController extends Controller
                 $q->where('title', 'like', "%{$searchTerm}%")
                     ->orWhere('service', 'like', "%{$searchTerm}%")
                     ->orWhere('city', 'like', "%{$searchTerm}%")
+                    ->orWhere('insurence', $searchTerm)
                     ->orWhere('area', 'like', "%{$searchTerm}%")
                     ->orWhere('phone', 'like', "%{$searchTerm}%");
             });

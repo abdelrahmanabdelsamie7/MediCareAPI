@@ -24,6 +24,7 @@ class ReservationController extends Controller
         if (!$user) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
+
         $validated = $request->validate([
             'doctor_id' => 'required|exists:doctors,id',
             'clinic_id' => 'required|exists:clinics,id',
@@ -38,25 +39,30 @@ class ReservationController extends Controller
         if ($appointment->is_booked) {
             return response()->json(['message' => 'This appointment is already booked.'], 400);
         }
-        $appointment->is_booked = true;
-        $appointment->save();
+        $doctor = Doctor::find($validated['doctor_id']);
+        if (!$doctor) {
+            return response()->json(['message' => 'Doctor not found'], 404);
+        }
+        $discount = min(floor($user->points / 10), 50); // كل 10 نقاط = 1 جنيه خصم، بحد أقصى 50 جنيه
+        $final_price = max($doctor->app_price - $discount, 0); // التأكد أن السعر لا يصبح سالبًا
+
+        $user->points -= ($discount * 10);
+        $user->save();
+
         $reservation = Reservation::create([
             'user_id' => $user->id,
             'doctor_id' => $validated['doctor_id'],
             'clinic_id' => $validated['clinic_id'],
             'appointment_id' => $validated['appointment_id'],
             'status' => $validated['status'],
+            'final_price' => $final_price,
         ]);
-        $doctor = Doctor::find($reservation->doctor_id);
-        if (!$doctor) {
-            return response()->json(['message' => 'Doctor not found'], 404);
-        }
-        $user = User::find($reservation->user_id);
-        if (!$user) {
-            return response()->json(['message' => 'User not found'], 404);
-        }
+
+        $appointment->is_booked = true;
+        $appointment->save();
+
         $reservationData = [
-            'message' => 'تم حجز موعد جديد',
+            'message' => 'تم حجز موعد جديد مع خصم النقاط',
             'doctor_name' => $doctor->fName . ' ' . $doctor->lName,
             'user_name' => $user->name,
             'user_phone' => $user->phone,
@@ -66,12 +72,14 @@ class ReservationController extends Controller
             'end_appointment' => $appointment->end_at,
             'duration_appointment' => $appointment->duration,
             'reservation_id' => $reservation->id,
+            'final_price' => $final_price,
         ];
-        $doctor = Doctor::find($reservation->doctor_id);
+
         $doctor->notify(new ReservationNotification($reservationData));
         $user->notify(new ReservationNotification($reservationData));
+
         return response()->json([
-            'message' => 'Reservation Created Successfully',
+            'message' => 'Reservation Created Successfully with Discount',
             'data' => $reservation
         ], 201);
     }

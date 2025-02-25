@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Carbon\Carbon;
 class AuthUserController extends Controller
 {
     public function __construct()
@@ -20,12 +21,23 @@ class AuthUserController extends Controller
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }
-
         if (!$token = auth('api')->attempt($validator->validated())) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
-
-        return $this->respondWithToken($token);
+        $user = auth('api')->user();
+        $now = Carbon::now();
+        if (!$user->last_visit || $now->diffInHours($user->last_visit) >= 24) {
+            $user->points += 10;
+            $user->last_visit = $now;
+            $user->save();
+        }
+        return response()->json([
+            'message' => 'تم تسجيل الدخول بنجاح!',
+            'access_token' => $token,
+            'points' => $user->points,
+            'last_visit' => $user->last_visit,
+            'user' => $user
+        ]);
     }
     public function register(Request $request)
     {

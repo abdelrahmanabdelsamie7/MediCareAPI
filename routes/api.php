@@ -33,6 +33,7 @@ Route::middleware('auth:admins')->group(function () {
 Route::get('/statistics', [StatisticsController::class, 'getStatistics']);
 Route::apiResource('Offer_Groups', OfferGroupController::class);
 Route::apiResource('/allusers', UserController::class);
+
 // End Admin Authorization الحاجات الادمن بيعملها ..
 
 // Satrt Doctor Authorization
@@ -67,6 +68,10 @@ Route::get('/notifications', function () {
     return response()->json($user->notifications);
 });
 Route::get('User_Notifications/{userId}', [UserNotification::class, 'userReservations']);
+Route::middleware('auth:api')->group(function () {
+    Route::get('/user/progress', [UserController::class, 'getProgress']);
+    Route::post('/user/redeem', [UserController::class, 'redeem']);
+});
 // End User Authorization
 Route::post('/ai-analysis', [AiAnalysisController::class, 'analyze'])->name('ai.analysis');
 
