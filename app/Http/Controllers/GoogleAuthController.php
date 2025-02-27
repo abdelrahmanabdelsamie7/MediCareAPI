@@ -6,7 +6,7 @@ use Google\Client as Google_Client;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-
+use Carbon\Carbon;
 class GoogleAuthController extends Controller
 {
     public function login(Request $request)
@@ -31,7 +31,11 @@ class GoogleAuthController extends Controller
                 'avatar' => $payload['picture'] ?? null,
             ]
         );
-
+        $now = Carbon::now();
+        if (!$user->last_visit || $now->diffInHours($user->last_visit) >= 24) {
+            $user->increment('points', 10);
+            $user->update(['last_visit' => $now]);
+        }
         // Generate JWT token
         $token = auth('api')->login($user);
      //   $token = auth('api')->attempt(['email' => $user->email, 'password' => '']);
