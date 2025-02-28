@@ -98,6 +98,8 @@ Route::prefix('user')
         Route::get('/getaccount', [AuthUserController::class, 'getAccount'])->name('user.getAccount');
         Route::post('/auth/google', [GoogleAuthController::class, 'login'])->name('user.google.login');
     });
+    Route::get('/verify-email/{token}', [AuthUserController::class, 'verifyEmail']);
+    Route::post('/resend-verification', [AuthUserController::class, 'resendVerification']);
 // Doctor Route
 Route::prefix('doctor')
     ->middleware('api')
@@ -106,3 +108,23 @@ Route::prefix('doctor')
         Route::post('/logout', [AuthDoctorController::class, 'logout'])->name('doctor.logout');
         Route::get('/getaccount', [AuthDoctorController::class, 'getAccount'])->name('doctor.getAccount');
     });
+
+
+
+
+
+        // Route::get('/send-test-email', function () {
+        //     try {
+        //         $testEmail = 'mfy567544@gmail.com'; // Replace with your email
+
+        //         Mail::raw('This is a test email from your Laravel API.', function ($message) use ($testEmail) {
+        //             $message->to($testEmail)
+        //                     ->subject('Test Email from Laravel API');
+        //         });
+
+        //         return response()->json(['message' => 'Test email sent successfully!']);
+        //     } catch (\Exception $e) {
+        //         Log::error('Mail Error: ' . $e->getMessage());
+        //         return response()->json(['error' => 'Failed to send email', 'details' => $e->getMessage()], 500);
+        //     }
+        // });

@@ -6,9 +6,10 @@ use App\Models\{Laboratory, Pharmacy, Reservation};
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class User extends Authenticatable implements JWTSubject
+class User extends Authenticatable implements JWTSubject,MustVerifyEmail
 {
     use HasApiTokens, HasFactory, Notifiable;
     protected $table = 'users';
@@ -22,6 +23,8 @@ class User extends Authenticatable implements JWTSubject
         'address',
         'birth_date',
         'password',
+        'verification_token',
+        'verification_token_expires_at',
     ];
     protected $keyType = 'string';
     public $incrementing = false;
@@ -37,6 +40,7 @@ class User extends Authenticatable implements JWTSubject
     protected $hidden = [
         'password',
         'remember_token',
+        'verification_token',
     ];
     protected $casts = [
         'email_verified_at' => 'datetime',
