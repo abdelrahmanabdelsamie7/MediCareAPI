@@ -5,6 +5,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Notifications\ReservationNotification;
 use Illuminate\Notifications\DatabaseNotification;
+use App\Mail\ReservationMail;
+use Illuminate\Support\Facades\Mail;
 class ReservationController extends Controller
 {
     public function getAvailableAppointments($doctorId, $day)
@@ -60,6 +62,8 @@ class ReservationController extends Controller
 
         $appointment->is_booked = true;
         $appointment->save();
+        
+        Mail::to($user->email)->send(new ReservationMail($reservation, $user));
 
         $reservationData = [
             'message' => 'تم حجز موعد جديد مع خصم النقاط',

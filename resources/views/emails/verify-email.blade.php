@@ -4,7 +4,7 @@
 Thank you for registering! Please verify your email by clicking the button below.
 This link is valid for **30 minutes**.
 
-@component('mail::button', ['url' => $verificationUrl, 'color' => 'primary'])
+@component('mail::button', ['url' => $verificationUrl, 'color' => 'success'])
 Verify Email
 @endcomponent
 

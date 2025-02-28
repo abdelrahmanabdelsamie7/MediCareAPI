@@ -10,6 +10,8 @@ use Stripe\StripeClient;
 use Exception;
 use Stripe\Exception\ApiErrorException;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\PaymentSuccessMail;
 
 class PaymentController extends Controller
 {
@@ -73,6 +75,8 @@ class PaymentController extends Controller
                 $reservation->update([
                     'payment_status' => 'succeeded'
                 ]);
+
+                Mail::to($reservation->user->email)->send(new PaymentSuccessMail($reservation));
                 return response()->json(['message' => 'Payment status updated successfully']);
             }
 
