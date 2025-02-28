@@ -10,6 +10,5 @@ Verify Email
 
 If you did not create this account, please ignore this email.
 
-Thanks,
-{{ config('app.name') }}
+Thanks , MediCare
 @endcomponent

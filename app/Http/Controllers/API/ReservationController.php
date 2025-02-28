@@ -45,8 +45,9 @@ class ReservationController extends Controller
         if (!$doctor) {
             return response()->json(['message' => 'Doctor not found'], 404);
         }
-        $discount = min(floor($user->points / 10), 50); // كل 10 نقاط = 1 جنيه خصم، بحد أقصى 50 جنيه
+        $discount = min(floor($user->points / 10) * 5, 50); // كل 10 نقاط = 5 جنيه خصم، بحد أقصى 50 جنيه
         $final_price = max($doctor->app_price - $discount, 0); // التأكد أن السعر لا يصبح سالبًا
+
 
         $user->points -= ($discount * 10);
         $user->save();
@@ -62,7 +63,7 @@ class ReservationController extends Controller
 
         $appointment->is_booked = true;
         $appointment->save();
-        
+
         Mail::to($user->email)->send(new ReservationMail($reservation, $user));
 
         $reservationData = [

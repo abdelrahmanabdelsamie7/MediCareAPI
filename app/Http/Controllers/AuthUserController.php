@@ -71,7 +71,7 @@ class AuthUserController extends Controller
             "birth_date" => $request->get('birth_date'),
             'password' => Hash::make($request->get('password')),
             'verification_token' => $verificationToken,
-            'verification_token_expires_at' => now()->addHours(3), 
+            'verification_token_expires_at' => now()->addHours(3),
         ]);
 
         Mail::to($user->email)->queue(new VerifyEmail($user));
@@ -84,8 +84,8 @@ class AuthUserController extends Controller
     public function verifyEmail($token)
     {
         $user = User::where('verification_token', $token)
-                    ->where('verification_token_expires_at', '>', now()) //  Check expiration
-                    ->first();
+            ->where('verification_token_expires_at', '>', now()) //  Check expiration
+            ->first();
 
         if (!$user) {
             return response()->json(['error' => 'Invalid or expired verification token'], 400);
@@ -96,7 +96,7 @@ class AuthUserController extends Controller
         $user->verification_token_expires_at = null;
         $user->save();
 
-        return response()->json(['message' => 'Email verified successfully. You can now log in.']);
+        return redirect('http://localhost:4200/Login')->with('message', 'Email verified successfully. You can now log in.');
     }
     public function resendVerification(Request $request)
     {
