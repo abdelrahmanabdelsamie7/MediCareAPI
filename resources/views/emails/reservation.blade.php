@@ -9,6 +9,7 @@ Your **appointment has been successfully confirmed**! Below are your reservation
 
 ### 🩺 **Doctor Details**
 👨‍⚕️ **Doctor:** {{ $doctorName }}
+---
 📍 **Clinic:** {{ $clinictitle }}
 
 ### 📅 **Appointment Details**
@@ -21,11 +22,11 @@ Your **appointment has been successfully confirmed**! Below are your reservation
 📅 View Your Appointment
 @endcomponent
 
-If you need to **reschedule or cancel**, please contact us at **[Support Email]** or call **[Support Number]**.
+If you need to **reschedule or cancel**, please contact us at **medicare@gmail.com** or call **+20112908321**.
 
-Thank you for choosing **{{ config('app.name') }}**!
+Thank you for choosing **MediCare**!
 We look forward to serving you. 😊
 
 Best Regards,
-**{{ config('app.name') }} Team**
+**MediCare Team**
 @endcomponent

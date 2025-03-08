@@ -19,9 +19,9 @@ class LaboratoryRequest extends FormRequest
             'locationUrl' => 'required|string|url',
             'whatsappLink' => 'required|string|url',
             'insurence' => 'required|boolean',
-            'start_at' => 'required|date',
-            'end_at' => 'required|date|after:start_at',
-            'chain_laboratory_id' => 'required|exists:chain_laboratories,id'
+            'start_at' => 'date_format:H:i',
+            'end_at' => 'date_format:H:i',
+            'chain_laboratory_id' => 'nullable|exists:chain_laboratories,id'
         ];
     }
 }

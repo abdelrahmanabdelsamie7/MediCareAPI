@@ -45,48 +45,44 @@ class ReservationController extends Controller
         if (!$doctor) {
             return response()->json(['message' => 'Doctor not found'], 404);
         }
-        $discount = min(floor($user->points / 10) * 5, 50); // كل 10 نقاط = 5 جنيه خصم، بحد أقصى 50 جنيه
-        $final_price = max($doctor->app_price - $discount, 0); // التأكد أن السعر لا يصبح سالبًا
+        $doctor = Doctor::find($validated['doctor_id']);
+        $discount = (($user->points / 10) * 5);
+        $final_price = $doctor->app_price - $discount;
+        $pointsToDeduct = floor($user->points / 10) * 10;
+        if ($user->points >= $pointsToDeduct && $pointsToDeduct >= 0) {
+            // خصم النقاط من المستخدم
+            $user->points -= $pointsToDeduct;
+            $user->save();
+
+            // إنشاء الحجز
+            $reservation = Reservation::create([
+                'user_id' => $user->id,
+                'doctor_id' => $validated['doctor_id'],
+                'clinic_id' => $validated['clinic_id'],
+                'appointment_id' => $validated['appointment_id'],
+                'status' => $validated['status'],
+                'final_price' => $final_price,
+            ]);
+
+            // تحديث حالة الموعد
+            $appointment->is_booked = true;
+            $appointment->save();
+            $reservation->final_price = $final_price ;
+            $reservation->save() ;
+
+            // إرسال البريد الإلكتروني
+            Mail::to($user->email)->send(new ReservationMail($reservation, $user));
+
+            // إرجاع البيانات
+            return response()->json([
+                'message' => 'Reservation Created Successfully with Discount',
+                'data' => $reservation
+            ], 201);
+        } else {
+            return response()->json(['message' => 'You do not have enough points to complete the reservation.'], 400);
+        }
 
 
-        $user->points -= ($discount * 10);
-        $user->save();
-
-        $reservation = Reservation::create([
-            'user_id' => $user->id,
-            'doctor_id' => $validated['doctor_id'],
-            'clinic_id' => $validated['clinic_id'],
-            'appointment_id' => $validated['appointment_id'],
-            'status' => $validated['status'],
-            'final_price' => $final_price,
-        ]);
-
-        $appointment->is_booked = true;
-        $appointment->save();
-
-        Mail::to($user->email)->send(new ReservationMail($reservation, $user));
-
-        $reservationData = [
-            'message' => 'تم حجز موعد جديد مع خصم النقاط',
-            'doctor_name' => $doctor->fName . ' ' . $doctor->lName,
-            'user_name' => $user->name,
-            'user_phone' => $user->phone,
-            'user_address' => $user->address,
-            'appointment_day' => $appointment->day,
-            'start_appointment' => $appointment->start_at,
-            'end_appointment' => $appointment->end_at,
-            'duration_appointment' => $appointment->duration,
-            'reservation_id' => $reservation->id,
-            'final_price' => $final_price,
-        ];
-
-        $doctor->notify(new ReservationNotification($reservationData));
-        $user->notify(new ReservationNotification($reservationData));
-
-        return response()->json([
-            'message' => 'Reservation Created Successfully with Discount',
-            'data' => $reservation
-        ], 201);
     }
     public function confirmReservation($reservationId)
     {

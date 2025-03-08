@@ -10,7 +10,7 @@ class AppointmentSeeder extends Seeder {
     $clinic = Clinic::first();
 
     Appointment::create([
-      'day' => '2025-01-25',
+      'day' => '2025-03-10',
       'start_at' => '18:00',
       'end_at' => '20:00',
       'duration' => 30,

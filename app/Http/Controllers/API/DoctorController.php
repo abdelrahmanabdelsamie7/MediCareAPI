@@ -28,7 +28,7 @@ class DoctorController extends Controller
     }
     public function show(string $id)
     {
-        $doctor = Doctor::with('department', 'specializations', 'clinics')
+        $doctor = Doctor::with('department', 'specializations', 'clinics' , 'clinics.images')
             ->findOrFail($id);
         $appointmentsGroupedByDate = $doctor->appointments->groupBy('day');
 

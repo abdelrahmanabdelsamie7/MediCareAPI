@@ -10,16 +10,16 @@ return new class extends Migration {
             $table->string('title');
             $table->text('service');
             $table->string('image')->nullable();
-            $table->string('phone', 15);
+            $table->string('phone', 15)->nullable();
             $table->string('city');
             $table->string('area');
-            $table->string('locationUrl');
-            $table->string('whatsappLink');
+            $table->string('locationUrl')->nullable();
+            $table->string('whatsappLink')->nullable();
             $table->boolean('insurence')->default(0);
-            $table->timestamp('start_at')->nullable();
-            $table->timestamp('end_at')->nullable();
+            $table->time('start_at')->nullable();
+            $table->time('end_at')->nullable();
             $table->decimal('avg_rate', 4, 2)->default(0.00);
-            $table->foreignUuid('chain_laboratory_id')
+            $table->foreignUuid('chain_laboratory_id')->nullable()
                 ->constrained('chain_laboratories')
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();

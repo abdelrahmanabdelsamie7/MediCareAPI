@@ -5,9 +5,9 @@ use Illuminate\Database\Seeder;
 class UserSeeder extends Seeder {
   public function run() {
     User::create([
-      'name' => 'John Doe',
-      'email' => 'user@example.com',
-      'password' => bcrypt('password'),
+      'name' => 'مصطفي',
+      'email' => 'mostafa@medicare.com',
+      'password' => bcrypt('12345678'),
       'phone' => '0123456789'
     ]);
   }

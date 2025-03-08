@@ -19,8 +19,8 @@ class CareCenter_DepartmentController extends Controller
             'department_id' => 'required|exists:departments,id',
             'care_center_id' => 'required|exists:care_centers,id',
             'app_price' => 'required|numeric',
-            'start_at' => 'required|date',
-            'end_at' => 'required|date|after:start_at',
+            'start_at' => 'date_format:H:i',
+            'end_at' => 'date_format:H:i',
         ]);
         $department = Department::find($validated['department_id']);
         $care_Center = CareCenter::find($validated['care_center_id']);
@@ -35,8 +35,8 @@ class CareCenter_DepartmentController extends Controller
     {
         $validated = $request->validate([
             'app_price' => 'required|numeric',
-            'start_at' => 'required|date',
-            'end_at' => 'required|date|after:start_at',
+            'start_at' => 'date_format:H:i:s',
+            'end_at' => 'date_format:H:i:s',
         ]);
         $department = Department::findOrFail($departmentId);
         $care_center = CareCenter::findOrFail($careCenterId);

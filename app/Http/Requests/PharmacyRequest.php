@@ -20,8 +20,8 @@ class PharmacyRequest extends FormRequest
             'whatsappLink' => 'required|string|url',
             'deliveryOption' => 'required|boolean',
             'insurence' => 'required|boolean',
-            'start_at' => 'date',
-            'end_at' => 'date|after:start_at',
+            'start_at' => 'date_format:H:i',
+            'end_at' => 'date_format:H:i',
             'chain_pharmacy_id' => 'nullable|exists:chain_pharmacies,id'
         ];
     }

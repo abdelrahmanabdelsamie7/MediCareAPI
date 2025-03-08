@@ -5,9 +5,9 @@ use Illuminate\Database\Seeder;
 class AdminSeeder extends Seeder {
   public function run() {
     Admin::create([
-      'name' => 'mohamedali',
-      'email' => 'moali@gmail.com',
-      'password' => bcrypt('moali123'),
+      'name' => 'admin',
+      'email' => 'admin@gmail.com',
+      'password' => bcrypt('12345678'),
       'phone' => '01129508321'
     ]);
   }

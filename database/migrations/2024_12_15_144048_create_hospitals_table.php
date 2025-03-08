@@ -10,9 +10,9 @@ return new class extends Migration {
             $table->string('title');
             $table->text('service');
             $table->string('image')->nullable();
-            $table->string('phone', 15);
+            $table->string('phone', 15)->nullable();
             $table->text('address');
-            $table->string('locationUrl');
+            $table->string('locationUrl')->nullable();
             $table->timestamps();
         });
     }

@@ -21,8 +21,8 @@ class Department_HospitalController extends Controller
             'department_id' => 'required|exists:departments,id',
             'hospital_id' => 'required|exists:hospitals,id',
             'app_price' => 'required|numeric',
-            'start_at' => 'required|date',
-            'end_at' => 'required|date|after:start_at',
+            'start_at' => 'date_format:H:i',
+            'end_at' => 'date_format:H:i',
         ]);
         $department = Department::find($validated['department_id']);
         $hospital = Hospital::find($validated['hospital_id']);
@@ -37,8 +37,8 @@ class Department_HospitalController extends Controller
     {
         $validated = $request->validate([
             'app_price' => 'required|numeric',
-            'start_at' => 'required|date',
-            'end_at' => 'required|date|after:start_at',
+            'start_at' => 'date_format:H:i:s',
+            'end_at' => 'date_format:H:i:s',
         ]);
         $department = Department::findOrFail($departmentId);
         $hospital = Hospital::findOrFail($hospitalId);

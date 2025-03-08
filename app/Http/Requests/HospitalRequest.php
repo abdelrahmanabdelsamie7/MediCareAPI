@@ -13,9 +13,9 @@ class HospitalRequest extends FormRequest
             'title' => 'required|string|max:255',
             'service' => 'required|string',
             'image' => 'nullable|max:2048',
-            'phone' => 'required|string|min:8|max:15',
+            'phone' => 'string|min:8|max:15',
             'address' => 'required|string',
-            'locationUrl' => 'url',
+            'locationUrl' => 'nullable|url',
         ];
     }
 }
