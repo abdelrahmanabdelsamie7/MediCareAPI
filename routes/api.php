@@ -88,18 +88,23 @@ Route::prefix('admin')
         Route::post('/logout', [AuthAdminController::class, 'logout'])->name('admin.logout');
         Route::get('/getaccount', [AuthAdminController::class, 'getAccount'])->name('admin.getAccount');
     });
-// User Route
-Route::prefix('user')
-    ->middleware('api')
-    ->group(function () {
+    Route::prefix('user')->group(function () {
+        // Public routes (no auth required)
         Route::post('/login', [AuthUserController::class, 'login'])->name('user.login');
-        Route::post('/logout', [AuthUserController::class, 'logout'])->name('user.logout');
         Route::post('/register', [AuthUserController::class, 'register'])->name('user.register');
-        Route::get('/getaccount', [AuthUserController::class, 'getAccount'])->name('user.getAccount');
         Route::post('/auth/google', [GoogleAuthController::class, 'login'])->name('user.google.login');
+        Route::post('/password/forgot', [AuthUserController::class, 'forgotPassword'])->name('user.password.forgot');
+        Route::post('/password/reset', [AuthUserController::class, 'resetPassword'])->name('user.password.reset');
+        Route::get('/verify-email/{token}', [AuthUserController::class, 'verifyEmail'])->name('user.verify.email');
+        Route::post('/resend-email', [AuthUserController::class, 'resendVerification'])->name('user.resend.verification');
+
+        // Protected routes (require JWT authentication)
+        Route::middleware('auth:api')->group(function () {
+            Route::get('/getaccount', [AuthUserController::class, 'getAccount'])->name('user.getAccount');
+            Route::post('/logout', [AuthUserController::class, 'logout'])->name('user.logout');
+            Route::delete('/account', [AuthUserController::class, 'deleteAccount'])->name('user.account.delete');
+        });
     });
-    Route::get('/verify-email/{token}', [AuthUserController::class, 'verifyEmail']);
-    Route::post('/resend-verification', [AuthUserController::class, 'resendVerification']);
 // Doctor Route
 Route::prefix('doctor')
     ->middleware('api')

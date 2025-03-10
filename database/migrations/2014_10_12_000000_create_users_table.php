@@ -15,6 +15,8 @@ return new class extends Migration {
             $table->timestamp('email_verified_at')->nullable(); // Email verification timestamp
             $table->string('verification_token')->nullable()->unique(); //  Email verification token
             $table->dateTime('verification_token_expires_at')->nullable(); //  Email verification token expiration
+            $table->string('reset_token')->nullable();
+            $table->timestamp('reset_token_expires_at')->nullable();
             $table->string('phone', 15)->nullable();
             $table->string('address')->nullable();
             $table->date('birth_date')->nullable();
@@ -22,6 +24,7 @@ return new class extends Migration {
             $table->string('role')->default('user');
             $table->integer('points')->default(0);
             $table->timestamp('last_visit')->nullable();
+
             $table->rememberToken();
             $table->timestamps();
         });

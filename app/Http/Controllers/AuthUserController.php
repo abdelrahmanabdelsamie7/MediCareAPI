@@ -9,11 +9,12 @@ use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\VerifyEmail;
+use App\Mail\ResetPassword;
 class AuthUserController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login', 'register', 'verifyEmail', 'resendVerification']]);
+        $this->middleware('auth:api', ['except' => ['login', 'register', 'verifyEmail', 'resendVerification', 'forgotPassword', 'resetPassword']]);
     }
     public function login(Request $request)
     {
@@ -125,6 +126,62 @@ class AuthUserController extends Controller
 
         return response()->json(['message' => 'Verification email has been resent.']);
     }
+    public function forgotPassword(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|string|email|exists:users,email',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+
+        $user = User::where('email', $request->email)->first();
+        $token = Str::random(60);
+
+        // Store the reset token in the users table
+        $user->reset_token = $token;
+        $user->reset_token_expires_at = now()->addHour(); // Token expires in 1 hour
+        $user->save();
+
+        try {
+            Mail::to($user->email)->queue(new ResetPassword($user, $token));
+        } catch (\Exception $e) {
+            \Log::error('Password reset email failed: ' . $e->getMessage());
+            return response()->json(['error' => 'Failed to send reset email.'], 500);
+        }
+
+        return response()->json(['message' => 'Password reset link sent to your email.'], 200);
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|string|email|exists:users,email',
+            'token' => 'required|string',
+            'password' => 'required|string|confirmed|min:8',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+
+        $user = User::where('email', $request->email)
+            ->where('reset_token', $request->token)
+            ->where('reset_token_expires_at', '>', now())
+            ->first();
+
+        if (!$user) {
+            return response()->json(['error' => 'Invalid or expired reset token.'], 400);
+        }
+
+        $user->password = Hash::make($request->password);
+        $user->reset_token = null;
+        $user->reset_token_expires_at = null;
+        $user->save();
+
+        return response()->json(['message' => 'Password reset successfully.'], 200);
+    }
     public function getaccount()
     {
         return response()->json(auth('api')->user());
@@ -133,6 +190,37 @@ class AuthUserController extends Controller
     {
         auth('api')->logout();
         return response()->json(['message' => 'Successfully logged out']);
+    }
+    public function deleteAccount(Request $request)
+    {
+        $user = auth('api')->user();
+        if (!$user) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        // Check if user logged in with OAuth (google_id exists)
+        $isOAuthUser = !empty($user->google_id);
+
+        if (!$isOAuthUser) {
+            // Password-based user: require and verify password
+            $validator = Validator::make($request->all(), [
+                'password' => 'required|string',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json($validator->errors(), 400);
+            }
+
+            if (!Hash::check($request->password, $user->password)) {
+                return response()->json(['error' => 'Incorrect password'], 401);
+            }
+        }
+
+        // Logout and delete user (works for both OAuth and password users)
+        auth('api')->logout();
+        $user->delete();
+
+        return response()->json(['message' => 'Account deleted successfully.'], 200);
     }
     public function refresh()
     {
