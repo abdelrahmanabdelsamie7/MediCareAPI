@@ -69,25 +69,24 @@ class AiAnalysisController extends Controller
     }
     private function buildPrompt(?string $text, bool $hasImage): string
     {
-        $basePrompt = $hasImage
-            ? "إذا كانت لها علاقة بالمريض أو مجال الصحة والعناية الطبية فقط حللها. غير هذا لا تحلل الصورة ولا تستخرج منها أي معلومات.
-               تأكد من إرجاع المعلومات التالية بتنسيق JSON فقط:
-               - imageAnalysis: وصف للصورة
-               - diagnosis: التشخيص المحتمل للحالة
-               - recommendedSpecialization: التخصص الطبي المقترح مثل طب العيون وهكذا
-               - advice: نصيحة قبل الذهاب للطبيب
-               - confidence: نسبة ثقة الذكاء الاصطناعي نسبة مئوية الرقم بدون العلامه المئويه
-               - medications: قائمة الأدوية المقترحة (كل دواء يحتوي على: name, dosage, notes)"
-            : "قم بتحليل الأعراض التالية وأعطِ استجابة منظمة بتنسيق JSON فقط:
-               - diagnosis: التشخيص المحتمل للحالة
-               - recommendedSpecialization: التخصص الطبي المقترح
-               - advice: نصيحة قبل الذهاب للطبيب
-               - confidence: نسبة ثقة الذكاء الاصطناعينسبة ثقة الذكاء الاصطناعي نسبة مئوية الرقم بدون العلامه المئوي
-               - medications: قائمة الأدوية المقترحة (كل دواء يحتوي على: name, dosage, notes).
+        $instruction = "";
+        if ($hasImage && $text) {
+            $instruction = "Analyze the provided image and the following symptoms: $text. If the image is related to health or medical care, include its analysis. Otherwise, ignore the image.";
+        } elseif ($hasImage) {
+            $instruction = "Analyze the provided image. If it’s related to health or medical care, provide an analysis. Otherwise, indicate it’s not relevant.";
+        } elseif ($text) {
+            $instruction = "Analyze the following symptoms: $text.";
+        }
 
-               الأعراض: $text.";
+        $responseFormat = "Return the response in Arabic as a valid JSON object with these keys:
+            - imageAnalysis: description of the image (if analyzed)
+            - diagnosis: probable diagnosis
+            - recommendedSpecialization: suggested medical specialization
+            - advice: advice before seeing a doctor
+            - confidence: AI confidence percentage (number without % sign)
+            - medications: list of suggested medications (each with name, dosage, notes)";
 
-        return $basePrompt;
+        return $instruction . " " . $responseFormat;
     }
     private function processImage($image): string
     {

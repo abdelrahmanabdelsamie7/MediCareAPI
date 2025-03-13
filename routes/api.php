@@ -1,5 +1,5 @@
 <?php
-use App\Http\Controllers\{AiAnalysisController,AuthUserController, AuthDoctorController, AuthAdminController, GoogleAuthController, PaymentController};
+use App\Http\Controllers\{AiAnalysisController,PrescriptionController,MedicineController,LabTestController,AuthUserController, AuthDoctorController, AuthAdminController, GoogleAuthController, PaymentController};
 use App\Http\Controllers\API\{CareCenterController, DepartmentController, HospitalController, Department_HospitalController, CareCenter_DepartmentController, ChainPharmaciesController, PharmacyController, ChainLaboratoriesController, LaboratoryController, DoctorController, SpecializationController, DoctorSpecializationController, DoctorOfferController, DoctorOfferImageController, BlogController, ClinicController, ClinicImageController, ClinicDoctorController, AppointmentController, UserPharmacyController, UserLaboratoryController, UserDoctorController, ReservationController, UserNotification, TipController, DeliveryServiceController, StatisticsController , OfferGroupController , UserController};
 // Start Admin Authorization الحاجات الادمن بيعملها ..
 Route::apiResource('Departments', DepartmentController::class);
@@ -74,7 +74,9 @@ Route::middleware('auth:api')->group(function () {
 });
 // End User Authorization
 Route::post('/ai-analysis', [AiAnalysisController::class, 'analyze'])->name('ai.analysis');
-
+Route::post('/analyze/prescription', [PrescriptionController::class, 'analyze']);
+Route::get('/medicine-details/{name}', [MedicineController::class, 'getDetails']);
+Route::post('/lab-test-analyzer', [LabTestController::class, 'analyze']);
 Route::post('/payment', [PaymentController::class, 'handlePayment']);
 Route::post('/payment/update', [PaymentController::class, 'updatePaymentStatus']);
 
@@ -113,23 +115,3 @@ Route::prefix('doctor')
         Route::post('/logout', [AuthDoctorController::class, 'logout'])->name('doctor.logout');
         Route::get('/getaccount', [AuthDoctorController::class, 'getAccount'])->name('doctor.getAccount');
     });
-
-
-
-
-
-        // Route::get('/send-test-email', function () {
-        //     try {
-        //         $testEmail = 'mfy567544@gmail.com'; // Replace with your email
-
-        //         Mail::raw('This is a test email from your Laravel API.', function ($message) use ($testEmail) {
-        //             $message->to($testEmail)
-        //                     ->subject('Test Email from Laravel API');
-        //         });
-
-        //         return response()->json(['message' => 'Test email sent successfully!']);
-        //     } catch (\Exception $e) {
-        //         Log::error('Mail Error: ' . $e->getMessage());
-        //         return response()->json(['error' => 'Failed to send email', 'details' => $e->getMessage()], 500);
-        //     }
-        // });
