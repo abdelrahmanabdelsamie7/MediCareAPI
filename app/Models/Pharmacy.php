@@ -1,29 +1,22 @@
 <?php
 namespace App\Models;
-use App\Models\User;
-use Illuminate\Support\Str;
+use App\Models\{User, ChainPharmacies, InsuranceCompany};
+use App\traits\UsesUuid;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Pharmacy extends Model
 {
-    use HasFactory;
+    use HasFactory, UsesUuid;
     protected $table = 'pharmacies';
-    protected $fillable = ['title', 'service', 'image', 'phone', 'area',   'city',  'locationUrl', 'whatsappLink', 'deliveryOption', 'insurence', 'start_at', 'end_at', 'chain_pharmacy_id'];
-    protected $keyType = 'string';
-    public $incrementing = false;
-    protected static function boot()
-    {
-        parent::boot();
-        static::creating(function ($model) {
-            if (empty($model->id)) {
-                $model->id = Str::uuid()->toString();
-            }
-        });
-    }
+    protected $fillable = ['title', 'service', 'image', 'phone', 'area', 'city', 'locationUrl', 'whatsappLink', 'deliveryOption', 'insurence', 'start_at', 'end_at', 'chain_pharmacy_id'];
     public function chainPharmacy()
     {
         return $this->belongsTo(ChainPharmacies::class, 'chain_pharmacy_id', 'id');
+    }
+    public function insuranceCompanies()
+    {
+        return $this->belongsToMany(InsuranceCompany::class, 'insurance_company_pharmacy', 'pharmacy_id', 'insurance_company_id');
     }
     public function users()
     {
@@ -32,4 +25,3 @@ class Pharmacy extends Model
             ->withTimestamps();
     }
 }
-

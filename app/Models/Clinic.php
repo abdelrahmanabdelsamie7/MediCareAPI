@@ -3,27 +3,15 @@ namespace App\Models;
 use App\Models\Doctor;
 use App\Models\Appointment;
 use App\Models\ClinicImage;
-use Illuminate\Support\Str;
+use App\traits\UsesUuid;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Clinic extends Model
 {
-    use HasFactory;
+    use HasFactory,UsesUuid;
     protected $table = 'clinics';
     protected $fillable = ['title', 'description', 'phone', 'address', 'locationUrl'];
-
-    protected $keyType = 'string';
-    public $incrementing = false;
-    protected static function boot()
-    {
-        parent::boot();
-        static::creating(function ($model) {
-            if (empty($model->id)) {
-                $model->id = Str::uuid()->toString();
-            }
-        });
-    }
     public function images()
     {
         return $this->hasMany(ClinicImage::class);

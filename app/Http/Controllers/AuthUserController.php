@@ -153,7 +153,6 @@ class AuthUserController extends Controller
 
         return response()->json(['message' => 'Password reset link sent to your email.'], 200);
     }
-
     public function resetPassword(Request $request)
     {
         $validator = Validator::make($request->all(), [

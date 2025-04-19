@@ -59,7 +59,7 @@ class LaboratoryController extends Controller
     }
     public function show(string $id)
     {
-        $laboratory = Laboratory::with('users')->findOrFail($id);
+        $laboratory = Laboratory::with(['users' , 'insuranceCompanies'])->findOrFail($id);
         return $this->sendSuccess('Laboratory Retireved Successfully', $laboratory);
     }
     public function update(LaboratoryRequest $request, string $id)

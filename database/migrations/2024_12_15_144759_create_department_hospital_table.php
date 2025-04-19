@@ -7,12 +7,11 @@ return new class extends Migration {
     {
         Schema::create('department_hospital', function (Blueprint $table) {
             $table->id();
-            $table->char('department_id', 36)->notNullable();
-            $table->char('hospital_id', 36)->notNullable();
+            $table->foreignUuid('department_id')->constrained('departments')->unique()->cascadeOnDelete()->cascdeOnUpdate();
+            $table->foreignUuid('hospital_id')->constrained('hospitals')->unique()->cascadeOnDelete()->cascdeOnUpdate();
             $table->time('start_at')->nullable();
             $table->time('end_at')->nullable();
             $table->decimal('app_price', 10, 2)->default(0)->notNullable();
-            $table->unique(['department_id', 'hospital_id']);
             $table->timestamps();
         });
     }

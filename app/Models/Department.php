@@ -1,5 +1,6 @@
 <?php
 namespace App\Models;
+use App\traits\UsesUuid;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\{Hospital, CareCenter, Doctor, Tip};
@@ -7,18 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Department extends Model
 {
-    use HasFactory;
-    protected $keyType = 'string';
-    public $incrementing = false;
-    protected static function boot()
-    {
-        parent::boot();
-        static::creating(function ($model) {
-            if (empty($model->id)) {
-                $model->id = Str::uuid()->toString();
-            }
-        });
-    }
+    use HasFactory,UsesUuid;
     protected $table = 'departments';
     protected $fillable = ['title', 'description', 'icon'];
     public function hospitals()
@@ -41,5 +31,4 @@ class Department extends Model
     {
         return $this->hasMany(Tip::class);
     }
-    protected $hidden = ['created_at', 'updated_at'];
 }

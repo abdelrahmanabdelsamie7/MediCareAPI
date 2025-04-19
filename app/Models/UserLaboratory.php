@@ -16,7 +16,6 @@ class UserLaboratory extends Model
         'user_id',
         'laboratory_id',
     ];
-
     public function users()
     {
         return $this->belongsToMany(User::class)->withPivot('review', 'rating_value')->withTimestamps();

@@ -1,29 +1,22 @@
 <?php
 namespace App\Models;
-use Illuminate\Support\Str;
+use App\traits\UsesUuid;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\{ChainLaboratories, User};
+use App\Models\{ChainLaboratories, User, InsuranceCompany};
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Laboratory extends Model
 {
-    use HasFactory;
+    use HasFactory, UsesUuid;
     protected $table = 'laboratories';
     protected $fillable = ['title', 'service', 'image', 'phone', 'area', 'city', 'locationUrl', 'whatsappLink', 'insurence', 'start_at', 'end_at', 'chain_laboratory_id'];
-    protected $keyType = 'string';
-    public $incrementing = false;
-    protected static function boot()
-    {
-        parent::boot();
-        static::creating(function ($model) {
-            if (empty($model->id)) {
-                $model->id = Str::uuid()->toString();
-            }
-        });
-    }
     public function chainLaboratory()
     {
         return $this->belongsTo(ChainLaboratories::class, 'chain_laboratory_id', 'id');
+    }
+    public function insuranceCompanies()
+    {
+        return $this->belongsToMany(InsuranceCompany::class, 'insurance_company_laboratory', 'laboratory_id', 'insurance_company_id');
     }
     public function users()
     {

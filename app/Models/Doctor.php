@@ -1,6 +1,6 @@
 <?php
 namespace App\Models;
-use Illuminate\Support\Str;
+use App\traits\UsesUuid;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -8,7 +8,7 @@ use App\Models\{Blog, Department, DoctorOffer, Specialization, Clinic, Appointme
 
 class Doctor extends Authenticatable implements JWTSubject
 {
-    use Notifiable;
+    use Notifiable,UsesUuid;
     protected $table = 'doctors';
     protected $fillable = [
         'fName',
@@ -27,26 +27,15 @@ class Doctor extends Authenticatable implements JWTSubject
         'password',
         'department_id'
     ];
-    protected $keyType = 'string';
-    public $incrementing = false;
-    protected static function boot()
-    {
-        parent::boot();
-        static::creating(function ($model) {
-            if (empty($model->id)) {
-                $model->id = Str::uuid()->toString();
-            }
-        });
-    }
     protected $hidden = [
         'updated_at',
         'password',
-        'remember_token', // Add this if you're using the "remember me" feature
+        'remember_token',
     ];
     public function setPasswordAttribute($value)
     {
         if ($value) {
-            $this->attributes['password'] = bcrypt($value); // Hashing the password
+            $this->attributes['password'] = bcrypt($value);
         }
     }
     public function department()
@@ -73,12 +62,10 @@ class Doctor extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(Reservation::class, 'doctor_id');
     }
-
     public function blogs()
     {
         return $this->hasMany(Blog::class);
     }
-
     public function getJWTIdentifier()
     {
         return $this->getKey();

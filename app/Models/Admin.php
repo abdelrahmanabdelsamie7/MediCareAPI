@@ -1,6 +1,6 @@
 <?php
 namespace App\Models;
-use Illuminate\Support\Str;
+use App\traits\UsesUuid;
 use Laravel\Sanctum\HasApiTokens;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
@@ -9,7 +9,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class Admin extends Authenticatable implements JWTSubject
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable,UsesUuid;
     protected $table = 'admins';
     protected $fillable = [
         'name',
@@ -17,17 +17,6 @@ class Admin extends Authenticatable implements JWTSubject
         'phone',
         'password',
     ];
-    protected $keyType = 'string';
-    public $incrementing = false;
-    protected static function boot()
-    {
-        parent::boot();
-        static::creating(function ($model) {
-            if (empty($model->id)) {
-                $model->id = Str::uuid()->toString();
-            }
-        });
-    }
     protected $hidden = [
         'password',
         'remember_token',
