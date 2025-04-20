@@ -12,6 +12,10 @@ class InusranceCompanyPharmacyController extends Controller
             'insurance_company_id' => 'required|exists:insurance_companies,id',
             'pharmacy_id' => 'required|exists:pharmacies,id',
         ]);
+        $pharmacy = DB::table('pharmacies')->where('id', $validated['pharmacy_id'])->first();
+        if (!$pharmacy || !$pharmacy->insurence) {
+            return response()->json(['message' => 'This pharmacy does not support insurance.'], 400);
+        }
         $exists = DB::table('insurance_company_pharmacy')
             ->where('insurance_company_id', $validated['insurance_company_id'])
             ->where('pharmacy_id', $validated['pharmacy_id'])
