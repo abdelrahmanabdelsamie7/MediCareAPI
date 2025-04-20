@@ -211,6 +211,8 @@ class ReservationController extends Controller
     public function markAsVisited($reservationId)
     {
         $doctor = auth('doctors')->user();
+
+
         if (!$doctor || $doctor->role !== 'doctor') {
             return response()->json(['message' => 'Unauthorized or Not a Doctor'], 401);
         }

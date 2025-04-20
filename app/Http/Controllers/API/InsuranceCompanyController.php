@@ -23,7 +23,7 @@ class InsuranceCompanyController extends Controller
     }
     public function show(string $id)
     {
-        $insurance_company = InsuranceCompany::with('departments')->findOrFail($id);
+        $insurance_company = InsuranceCompany::findOrFail($id);
         return $this->sendSuccess('Insurance Company Retireved Successfully', $insurance_company);
     }
     public function update(InusranceCompanyRequest $request, string $id)

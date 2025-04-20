@@ -16,7 +16,9 @@ class Pharmacy extends Model
     }
     public function insuranceCompanies()
     {
-        return $this->belongsToMany(InsuranceCompany::class, 'insurance_company_pharmacy', 'pharmacy_id', 'insurance_company_id');
+        return $this->belongsToMany(InsuranceCompany::class, 'insurance_company_pharmacy', 'pharmacy_id', 'insurance_company_id')
+            ->withPivot('id')
+            ->withTimestamps();
     }
     public function users()
     {
