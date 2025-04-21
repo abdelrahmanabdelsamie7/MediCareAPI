@@ -1,6 +1,6 @@
 <?php
 namespace App\Models;
-use App\traits\UsesUuid;
+use App\Traits\UsesUuid;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\{ChainLaboratories, User, InsuranceCompany};
 use Illuminate\Database\Eloquent\Factories\HasFactory;

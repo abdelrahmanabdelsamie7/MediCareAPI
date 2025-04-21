@@ -1,6 +1,6 @@
 <?php
 namespace App\Models;
-use App\traits\UsesUuid;
+use App\Traits\UsesUuid;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;

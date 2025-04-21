@@ -1,6 +1,6 @@
 <?php
 namespace App\Models;
-use App\traits\UsesUuid;
+use App\Traits\UsesUuid;
 use Laravel\Sanctum\HasApiTokens;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
