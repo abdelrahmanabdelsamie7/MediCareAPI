@@ -1,5 +1,5 @@
 <?php
-namespace App\traits;
+namespace App\Traits;
 use Illuminate\Support\Str;
 
 trait UsesUuid
