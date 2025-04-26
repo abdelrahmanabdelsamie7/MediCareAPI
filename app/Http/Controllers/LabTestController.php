@@ -30,17 +30,13 @@ class LabTestController extends Controller
     private function validateRequest(Request $request)
     {
         $request->validate([
-            'file' => 'required|file|mimes:jpeg,png,pdf|max:5000', // Accepts images and PDFs, max 5MB
+            'file' => 'required|file|mimes:jpeg,png|max:5000', // Accepts images and PDFs, max 5MB
         ]);
     }
 
     private function callGeminiApi(string $prompt, string $fileData): array
     {
         $apiKey = env('GEMINI_API_KEY');
-        if (empty($apiKey)) {
-            throw new \Exception('Gemini API key is missing. Please configure it in your .env file.');
-        }
-
         $mimeType = Str::startsWith($fileData, 'data:application/pdf') ? 'application/pdf' : 'image/jpeg';
         $parts = [
             ['inlineData' => ['mimeType' => $mimeType, 'data' => $fileData]],
@@ -61,7 +57,7 @@ class LabTestController extends Controller
 
     private function buildPrompt(): string
     {
-        $instruction = "قم بتحليل ملف الفحص المختبري المرفوع (صورة أو PDF) واستخرج المعلومات التالية باللغة العربية بتنسيق JSON صالح. ";
+        $instruction = " لازم يكون فحص مختبري مش وصفه طبيه او روشته قم بتحليل ملف الفحص المختبري المرفوع (صورة أو PDF) واستخرج المعلومات التالية باللغة العربية بتنسيق JSON صالح. ";
         $instruction .= "حدد الاختبارات الموجودة في التقرير وقيمها، وقدم تفسيرًا طبيًا واقتراحات بناءً على النتائج.";
 
         $responseFormat = "أعد الاستجابة تحتوي على:

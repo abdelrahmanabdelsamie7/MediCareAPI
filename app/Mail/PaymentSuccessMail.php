@@ -29,7 +29,7 @@ class PaymentSuccessMail extends Mailable
                 'appointmentTime' => $this->reservation->appointment->start_at,
                 'reservationId' => $this->reservation->id,
                 'reservationUrl' => $reservationUrl,
-                'reservationPrice' => $this->reservation->doctor->app_price,
+                'reservationPrice' => $this->reservation->final_price,
                 'reservationDuration' => $this->reservation->appointment->duration,
             ]);
     }

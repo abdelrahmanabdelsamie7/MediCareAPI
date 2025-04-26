@@ -72,7 +72,7 @@ class AuthUserController extends Controller
             "birth_date" => $request->get('birth_date'),
             'password' => Hash::make($request->get('password')),
             'verification_token' => $verificationToken,
-            'verification_token_expires_at' => now()->addHours(3),
+            'verification_token_expires_at' => now()->addMinutes(30),
         ]);
 
         Mail::to($user->email)->queue(new VerifyEmail($user));
@@ -117,7 +117,7 @@ class AuthUserController extends Controller
 
         //  Regenerate verification token
         $user->verification_token = Str::random(60);
-        $user->verification_token_expires_at = now()->addHours(3);
+        $user->verification_token_expires_at = now()->addMinutes(30);
         $user->save();
 
         // reSend verification email
@@ -221,6 +221,42 @@ class AuthUserController extends Controller
 
         return response()->json(['message' => 'Account deleted successfully.'], 200);
     }
+    public function updateProfile(Request $request)
+{
+    $user = auth('api')->user(); // Get the authenticated user
+
+    // Validation for the inputs
+    $validator = Validator::make($request->all(), [
+        'phone' => 'sometimes|required|string|min:8|max:15|regex:/^[0-9]+$/',
+        'address' => 'sometimes|required|string',
+        'birth_date' => 'sometimes|required|date|before:today',
+    ]);
+
+    if ($validator->fails()) {
+        return response()->json($validator->errors(), 422);
+    }
+
+    // Update the fields if they are provided
+    if ($request->has('phone')) {
+        $user->phone = $request->get('phone');
+    }
+
+    if ($request->has('address')) {
+        $user->address = $request->get('address');
+    }
+
+    if ($request->has('birth_date')) {
+        $user->birth_date = $request->get('birth_date');
+    }
+
+    $user->save(); // Save the updated user details
+
+    return response()->json([
+        'message' => 'Profile updated successfully.',
+        'user' => $user
+    ]);
+}
+
     public function refresh()
     {
         return $this->respondWithToken(auth('api')->refresh());

@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use App\Models\Department;
 
 class AiAnalysisController extends Controller
 {
@@ -69,6 +70,7 @@ class AiAnalysisController extends Controller
     }
     private function buildPrompt(?string $text, bool $hasImage): string
     {
+        $departmentsList = $this->getDepartmentsList();
         $instruction = "";
         if ($hasImage && $text) {
             $instruction = "Analyze the provided image and the following symptoms: $text. If the image is related to health or medical care, include its analysis. Otherwise, ignore the image.";
@@ -81,7 +83,7 @@ class AiAnalysisController extends Controller
         $responseFormat = "Return the response in Arabic as a valid JSON object with these keys:
             - imageAnalysis: description of the image (if analyzed)
             - diagnosis: probable diagnosis
-            - recommendedSpecialization: suggested medical specialization
+            - recommendedSpecialization: suggested medical department may be  only one from these or may be not $departmentsList.
             - advice: advice before seeing a doctor
             - confidence: AI confidence percentage (number without % sign)
             - medications: list of suggested medications (each with name, dosage, notes)";
@@ -145,4 +147,9 @@ class AiAnalysisController extends Controller
             'medication_warning' => "⚠️ لا تتناول أي دواء دون الرجوع إلى طبيب مختص."
         ];
     }
-}
+    private function getDepartmentsList(): string
+    {
+        $departments = Department::pluck('title')->toArray();
+        return implode(', ', $departments);
+    }
+ }

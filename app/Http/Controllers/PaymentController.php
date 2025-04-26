@@ -36,6 +36,10 @@ class PaymentController extends Controller
             ]);
 
             $reservation = Reservation::findOrFail($validated['id']);
+            
+            if ($reservation->payment_status === 'succeeded') {
+                return response()->json(['error' => 'Payment has already been completed for this reservation.'], 400);
+            }
 
             $amountInCents = (int) ($validated['amount'] * 100); // Convert EGP to cents (piastres)
 
@@ -48,7 +52,7 @@ class PaymentController extends Controller
             // Update reservation with payment details
             $reservation->update([
                 'payment_intent_id' => $paymentIntent->id,
-                'currency' => 'usd',
+                'currency' => 'egp',
                 'payment_status' => 'pending',
             ]);
 
@@ -73,7 +77,8 @@ class PaymentController extends Controller
 
             if ($paymentIntent->status === 'succeeded') {
                 $reservation->update([
-                    'payment_status' => 'succeeded'
+                    'payment_status' => 'succeeded',
+                    'status' => 'confirmed'
                 ]);
 
                 Mail::to($reservation->user->email)->send(new PaymentSuccessMail($reservation));
