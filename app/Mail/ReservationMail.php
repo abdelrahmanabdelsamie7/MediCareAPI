@@ -6,7 +6,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-
+use Carbon\Carbon;
 class ReservationMail extends Mailable
 {
     use Queueable, SerializesModels;
@@ -29,7 +29,7 @@ class ReservationMail extends Mailable
                 'userName' => $this->user->name,
                 'doctorName' => $this->reservation->doctor->fName . ' ' . $this->reservation->doctor->lName,
                 'appointmentDate' => $this->reservation->appointment->day,
-                'appointmentTime' => $this->reservation->appointment->start_at,
+                'appointmentTime' => Carbon::createFromFormat('H:i:s', $this->reservation->appointment->start_at)->format('g:i A') .' - ' . Carbon::createFromFormat('H:i:s', $this->reservation->appointment->end_at)->format('g:i A'),
                 'clinictitle' => $this->reservation->clinic->title,
                 'reservationUrl' => $reservationUrl,
                 'reservationId' => $this->reservation->id,

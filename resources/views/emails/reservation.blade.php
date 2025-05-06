@@ -3,7 +3,7 @@
 
 Dear **{{ $userName }}**,
 
-Your **appointment has been successfully confirmed**! Below are your reservation details:
+Your **appointment has been successfully reserved**! Below are your reservation details:
 
 ---
 
@@ -22,7 +22,7 @@ Your **appointment has been successfully confirmed**! Below are your reservation
 📅 View Your Appointment
 @endcomponent
 
-If you need to **reschedule or cancel**, please contact us at **medicare@gmail.com** or call **+20112908321**.
+You can contact us at **medicare@gmail.com** or call **+20112908321**.
 
 Thank you for choosing **MediCare**!
 We look forward to serving you. 😊

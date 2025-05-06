@@ -75,7 +75,7 @@ class AiAnalysisController extends Controller
         if ($hasImage && $text) {
             $instruction = "Analyze the provided image and the following symptoms: $text. If the image is related to health or medical care, include its analysis. Otherwise, ignore the image.";
         } elseif ($hasImage) {
-            $instruction = "Analyze the provided image. If it’s related to health or medical care, provide an analysis. Otherwise, indicate it’s not relevant.";
+            $instruction = "Analyze the provided image If it’s related to health or medical care, provide an analysis. Otherwise, indicate it’s not relevant and don't recommend Specializations.";
         } elseif ($text) {
             $instruction = "Analyze the following symptoms: $text.";
         }
@@ -83,7 +83,7 @@ class AiAnalysisController extends Controller
         $responseFormat = "Return the response in Arabic as a valid JSON object with these keys:
             - imageAnalysis: description of the image (if analyzed)
             - diagnosis: probable diagnosis
-            - recommendedSpecialization: suggested medical department may be  only one from these or may be not $departmentsList.
+            - recommendedSpecialization: suggested medical department that the patient should go to according to the given symptoms may be  only one from these or may be not $departmentsList.
             - advice: advice before seeing a doctor
             - confidence: AI confidence percentage (number without % sign)
             - medications: list of suggested medications (each with name, dosage, notes)";

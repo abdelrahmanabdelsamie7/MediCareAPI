@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Notifications\DatabaseNotification;
 use App\Mail\ReservationMail;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\DB;
 class ReservationController extends Controller
 {
     public function getAvailableAppointments($doctorId, $day)
@@ -25,50 +26,74 @@ class ReservationController extends Controller
         if (!$user) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
+
         $validated = $request->validate([
             'doctor_id' => 'required|exists:doctors,id',
             'clinic_id' => 'required|exists:clinics,id',
             'appointment_id' => 'required|exists:appointments,id',
             'status' => 'required|in:pending,confirmed,canceled',
         ]);
-        $existingReservation = Reservation::where('appointment_id', $validated['appointment_id'])->exists();
-        if ($existingReservation) {
-            return response()->json(['message' => 'This appointment is already reserved.'], 400);
-        }
-        $appointment = Appointment::find($validated['appointment_id']);
-        if ($appointment->is_booked) {
-            return response()->json(['message' => 'This appointment is already booked.'], 400);
-        }
-        $doctor = Doctor::find($validated['doctor_id']);
-        if (!$doctor) {
-            return response()->json(['message' => 'Doctor not found'], 404);
-        }
-        $doctor = Doctor::find($validated['doctor_id']);
-        $discount = (($user->points / 10) * 5);
-        $final_price = $doctor->app_price - $discount;
-        $pointsToDeduct = floor($user->points / 10) * 10;
-        if ($user->points >= $pointsToDeduct && $pointsToDeduct >= 0) {
-            $user->points -= $pointsToDeduct;
-            $user->save();
-            $reservation = Reservation::create([
-                'user_id' => $user->id,
-                'doctor_id' => $validated['doctor_id'],
-                'clinic_id' => $validated['clinic_id'],
-                'appointment_id' => $validated['appointment_id'],
-                'status' => $validated['status'],
-                'final_price' => $final_price,
-            ]);
-            $appointment->is_booked = true;
-            $appointment->save();
-            $reservation->final_price = $final_price ;
-            $reservation->save() ;
-            Mail::to($user->email)->send(new ReservationMail($reservation, $user));
-            return response()->json([
-                'message' => 'Reservation Created Successfully with Discount',
-                'data' => $reservation
-            ], 201);
-        } else {
-            return response()->json(['message' => 'You do not have enough points to complete the reservation.'], 400);
+        try {
+            DB::beginTransaction(); //  Begin transaction
+
+            //  Lock the appointment row to prevent race conditions
+            $appointment = Appointment::where('id', $validated['appointment_id'])->lockForUpdate()->first();
+
+            if (!$appointment) {
+                DB::rollBack();
+                return response()->json(['message' => 'Appointment not found.'], 404);
+            }
+
+            $existingReservation = Reservation::where('appointment_id', $validated['appointment_id'])->exists();
+            if ($existingReservation || $appointment->is_booked) {
+                DB::rollBack();
+                return response()->json(['message' => 'This appointment is already reserved.'], 400);
+            }
+
+            $doctor = Doctor::find($validated['doctor_id']);
+            if (!$doctor) {
+                DB::rollBack();
+                return response()->json(['message' => 'Doctor not found'], 404);
+            }
+
+            $discount = (($user->points / 10) * 5);
+            $final_price = $doctor->app_price - $discount;
+            $pointsToDeduct = floor($user->points / 10) * 10;
+
+            if ($user->points >= $pointsToDeduct && $pointsToDeduct >= 0) {
+                $user->points -= $pointsToDeduct;
+                $user->save();
+
+                $reservation = Reservation::create([
+                    'user_id' => $user->id,
+                    'doctor_id' => $validated['doctor_id'],
+                    'clinic_id' => $validated['clinic_id'],
+                    'appointment_id' => $validated['appointment_id'],
+                    'status' => $validated['status'],
+                    'final_price' => $final_price,
+                ]);
+
+                $appointment->is_booked = true;
+                $appointment->save();
+
+                $reservation->final_price = $final_price;
+                $reservation->save();
+
+                DB::commit(); //  Commit after all operations
+
+                Mail::to($user->email)->send(new ReservationMail($reservation, $user));
+
+                return response()->json([
+                    'message' => 'Reservation Created Successfully with Discount',
+                    'data' => $reservation
+                ], 201);
+            } else {
+                DB::rollBack();
+                return response()->json(['message' => 'You do not have enough points to complete the reservation.'], 400);
+            }
+        } catch (\Exception $e) {
+            DB::rollBack(); // Rollback on error
+            return response()->json(['message' => 'An error occurred while creating the reservation.', 'error' => $e->getMessage()], 500);
         }
     }
     public function confirmReservation($reservationId)

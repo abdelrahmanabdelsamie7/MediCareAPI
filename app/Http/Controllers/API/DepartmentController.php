@@ -17,7 +17,7 @@ class DepartmentController extends Controller
     public function index(Request $request)
     {
         $query = Department::query();
-        if ($request->has('search')) {
+        if ($request->filled('search')) {
             $searchTerm = $request->search;
             $query->where(function ($q) use ($searchTerm) {
                 $q->where('title', 'like', "%{$searchTerm}%")
