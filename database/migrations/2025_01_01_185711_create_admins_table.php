@@ -12,6 +12,7 @@ return new class extends Migration {
             $table->string('phone', 15);
             $table->string('password');
             $table->string('role')->default('admin');
+            $table->boolean('is_super_admin')->default(false);
             $table->rememberToken();
             $table->timestamps();
         });
